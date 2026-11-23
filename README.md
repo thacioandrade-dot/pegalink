@@ -4,6 +4,13 @@ Clonador funcional de uma ferramenta de download por link: cole uma URL de **You
 
 Projeto independente: não usa o nome, o logo nem os textos do site de referência.
 
+## Site publicado
+
+- **URL:** https://pegalink.onrender.com
+- **Hospedagem:** Render (plano Free)
+
+> No plano Free o serviço dorme após inatividade; a primeira requisição pode demorar ~50 s para acordar.
+
 ## Requisitos
 
 - Node.js 18 ou superior (testado no Node 26)
