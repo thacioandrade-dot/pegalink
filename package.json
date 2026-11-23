@@ -1,0 +1,24 @@
+{
+  "name": "pegalink",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Downloader de vídeos do YouTube, TikTok e Instagram via link",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "update:yt": "node -e \"require('youtube-dl-exec').update().then(() => console.log('yt-dlp atualizado')).catch((e) => { console.error(e); process.exit(1) })\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ffmpeg-static": "^5.3.0",
+    "youtube-dl-exec": "^3.1.19"
+  },
+  "allowScripts": {
+    "ffmpeg-static@5.3.0": true,
+    "youtube-dl-exec@3.1.19": true
+  }
+}

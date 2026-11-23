@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>PegaLink — baixe vídeos de YouTube, TikTok e Instagram pelo link</title>
+  <meta name="description" content="Baixe vídeos do YouTube, TikTok e Instagram pelo link, em MP4 ou MP3. Gratuito, rápido e sem instalar nada.">
+  <meta name="keywords" content="baixar vídeo, download youtube, download tiktok, download instagram, mp3, mp4, baixar vídeo pelo link">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="language" content="pt-BR">
+  <link rel="canonical" id="canonical-link" href="http://localhost:3000/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="PegaLink — baixe vídeos pelo link">
+  <meta property="og:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, rápido e sem cadastro.">
+  <meta property="og:url" id="og-url" content="http://localhost:3000/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PegaLink — baixe vídeos pelo link">
+  <meta name="twitter:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, rápido e sem cadastro.">
+
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "PegaLink",
+        "url": "http://localhost:3000/",
+        "inLanguage": "pt-BR"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "PegaLink",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Windows, macOS, Linux, iOS, Android",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "É gratuito? Preciso criar uma conta?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, é gratuito e não pedimos cadastro. Basta colar o link do vídeo." } },
+          { "@type": "Question", "name": "Quais sites são aceitos?", "acceptedAnswer": { "@type": "Answer", "text": "YouTube, TikTok e Instagram. Links de vídeos públicos funcionam melhor." } },
+          { "@type": "Question", "name": "Posso baixar em MP3?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Depois de buscar o vídeo, escolha a opção Áudio MP3." } },
+          { "@type": "Question", "name": "Funciona no celular?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, em Android e iPhone, usando o navegador." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#topo" aria-label="PegaLink, início">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5L8 5.5z"/></svg>
+      </span>
+      <span class="brand-name">Pega<span>Link</span></span>
+    </a>
+    <nav class="header-nav" aria-label="Navegação principal">
+      <a href="#recursos">Recursos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <main id="topo">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow"><span class="pulse"></span> YouTube · TikTok · Instagram</div>
+        <h1>Baixe vídeos <span class="gradient-text">pelo link</span>,<br>sem complicação.</h1>
+        <p class="hero-subtitle">
+          Cole a URL do vídeo, escolha a qualidade e pronto. Funciona no celular e no computador,
+          sem cadastro e sem instalar nenhum programa.
+        </p>
+
+        <form id="url-form" class="search-box" novalidate>
+          <label for="video-url">Cole a URL do vídeo</label>
+          <div class="input-row">
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.1 0l2-2A5 5 0 0 0 12 3.9l-1.2 1.2"/>
+                <path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.2-1.2"/>
+              </svg>
+              <input
+                id="video-url"
+                name="url"
+                type="url"
+                inputmode="url"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="https://www.youtube.com/watch?v=..."
+                aria-describedby="form-error"
+                required
+              >
+              <button type="button" id="paste-btn" class="icon-btn" title="Colar da área de transferência" aria-label="Colar da área de transferência">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>
+                </svg>
+              </button>
+              <button type="button" id="clear-btn" class="icon-btn" title="Limpar campo" aria-label="Limpar campo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18"/>
+                </svg>
+              </button>
+            </div>
+            <button type="submit" id="search-btn" class="primary-btn">
+              <span class="btn-label">Buscar vídeo</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="form-meta">
+            <span id="platform-chip" class="platform-chip" hidden></span>
+            <span id="form-error" class="form-error" role="alert" hidden></span>
+          </div>
+        </form>
+
+        <div class="ad-slot ad-leaderboard" data-ad-slot="top" hidden></div>
+
+        <div class="trust-row">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg> Grátis e ilimitado</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg> Sem cadastro</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg> MP4 e MP3</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultado" class="result-section" hidden aria-live="polite">
+      <div class="result-card">
+        <div class="result-head">
+          <img id="result-thumb" class="result-thumb" alt="Miniatura do vídeo">
+          <div class="result-info">
+            <span id="result-platform" class="badge"></span>
+            <h2 id="result-title">—</h2>
+            <p id="result-meta"></p>
+          </div>
+          <button type="button" id="new-search" class="ghost-btn">Nova busca</button>
+        </div>
+
+        <div class="formats-head">
+          <h3>Escolha o formato</h3>
+          <span>Os downloads são gerados no seu navegador</span>
+        </div>
+        <div id="formats" class="formats-grid"></div>
+
+        <div class="ad-slot ad-result" data-ad-slot="result" hidden></div>
+
+        <div id="download-panel" class="download-panel" hidden>
+          <div class="download-panel-top">
+            <span id="download-status">Preparando o arquivo…</span>
+            <span id="download-percent"></span>
+          </div>
+          <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+          <p id="download-detail"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="recursos" class="section">
+      <div class="section-head">
+        <span class="section-kicker">Por que usar</span>
+        <h2>Tudo que você precisa, nada que você não precisa.</h2>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+          <h3>Download direto</h3>
+          <p>O arquivo vai para a pasta de downloads do seu dispositivo, sem etapas extras.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+          <h3>Vários formatos</h3>
+          <p>Escolha entre as resoluções disponíveis ou extraia só o áudio em MP3.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span>
+          <h3>Rápido e simples</h3>
+          <p>Cole, busque, baixe. Três passos, sem esperar por filas ou anúncios.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+          <h3>Privacidade</h3>
+          <p>Sem conta, sem histórico e sem rastreadores de terceiros.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="como-funciona" class="section section-alt">
+      <div class="section-head">
+        <span class="section-kicker">Como funciona</span>
+        <h3>Três passos e o vídeo é seu.</h3>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="step-number">1</span><div><h4>Copie o link</h4><p>No app da plataforma, toque em Compartilhar e escolha Copiar link.</p></div></div>
+        <div class="step"><span class="step-number">2</span><div><h4>Cole aqui</h4><p>Cole a URL no campo acima e clique em Buscar vídeo.</p></div></div>
+        <div class="step"><span class="step-number">3</span><div><h4>Escolha e baixe</h4><p>Selecione MP4 ou MP3 e salve o arquivo no seu dispositivo.</p></div></div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="section-head">
+        <span class="section-kicker">Perguntas frequentes</span>
+        <h3>Dúvidas rápidas antes de começar.</h3>
+      </div>
+      <div class="faq-list">
+        <details><summary>É gratuito? Preciso criar uma conta?</summary><p>Sim, é gratuito e não pedimos cadastro. Basta colar o link do vídeo.</p></details>
+        <details><summary>Quais sites são aceitos?</summary><p>YouTube, TikTok e Instagram. Links de vídeos públicos funcionam melhor.</p></details>
+        <details><summary>Por que um vídeo não foi encontrado?</summary><p>Vídeos privados, apagados, com restrição de idade ou que exigem login podem falhar. Verifique se o link abre normalmente no navegador.</p></details>
+        <details><summary>Posso baixar em MP3?</summary><p>Sim. Depois de buscar o vídeo, escolha a opção “Áudio MP3”.</p></details>
+        <details><summary>Funciona no celular?</summary><p>Sim, em Android e iPhone, usando o navegador. Em iOS, o arquivo pode ser salvo no app Arquivos.</p></details>
+        <details><summary>Isso é oficial do YouTube, TikTok ou Instagram?</summary><p>Não. Este é um projeto independente e não é afiliado a essas empresas.</p></details>
+      </div>
+    </section>
+    <div class="ad-slot ad-footer" data-ad-slot="footer" hidden></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-brand">Pega<span>Link</span></span>
+      <p>Use apenas para conteúdo próprio ou autorizado. Respeite direitos autorais e os termos das plataformas.</p>
+      <span class="footer-note">Projeto independente · Não afiliado a YouTube, TikTok ou Instagram.</span>
+    </div>
+  </footer>
+
+  <script src="ads-config.js"></script>
+  <script src="ads.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
