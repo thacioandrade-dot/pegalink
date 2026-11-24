@@ -10,7 +10,9 @@
 - Não colar anúncios da Adsterra no site.
 - Não divulgar o link de teste.
 
-Os commits locais `34f06f8` e `7ed7c5a` ainda não foram enviados ao GitHub.
+Os commits locais `34f06f8`, `7ed7c5a` e `49299ac` ainda não foram enviados ao GitHub.
+
+Validação local (Lighthouse em `http://localhost:3100/`): SEO 100, Acessibilidade 100, Boas Práticas 100, sem falhas.
 
 ## 1. Domínio
 
