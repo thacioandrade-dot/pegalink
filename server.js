@@ -28,13 +28,26 @@ const RATE_LIMIT = 25;
 const hits = new Map();
 
 app.disable('x-powered-by');
-app.use((_req, res, next) => {
+app.use((req, res, next) => {
   res.set('X-Content-Type-Options', 'nosniff');
   res.set('X-Frame-Options', 'SAMEORIGIN');
   res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  const protocol = String(req.get('x-forwarded-proto') || req.protocol || '')
+    .split(',')[0]
+    .trim();
+  if (protocol === 'https') {
+    res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
   next();
 });
+
+// Páginas públicas podem ficar em cache na CDN (Cloudflare) sem alterar o HTML:
+// o navegador renova em 1h e a borda renova em 24h, reduzindo o despertar do Render.
+function setPublicCache(res) {
+  res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
+  res.set('CDN-Cache-Control', 'public, max-age=86400');
+}
 app.use(express.json({ limit: '16kb' }));
 
 // O Render Free não oferece "Request logs". Registramos apenas as visitas às
@@ -78,6 +91,7 @@ setInterval(() => {
 }, 5 * 60_000).unref();
 
 app.get('/api/health', (_req, res) => {
+  res.set('Cache-Control', 'no-store');
   res.json({
     ok: true,
     service: 'PegaLink',
@@ -96,6 +110,7 @@ function siteBase(req) {
 
 app.get('/robots.txt', (req, res) => {
   const base = siteBase(req);
+  setPublicCache(res);
   res.type('text/plain');
   res.send(
     'User-agent: *\n' +
@@ -129,7 +144,7 @@ app.get('/sitemap.xml', (req, res) => {
     })
   ].join('');
 
-  res.set('Cache-Control', 'public, max-age=3600');
+  setPublicCache(res);
   res.type('application/xml');
   res.send(
     '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -141,7 +156,7 @@ app.get('/sitemap.xml', (req, res) => {
 
 for (const page of getPages()) {
   app.get(`/${page.slug}`, (req, res) => {
-    res.set('Cache-Control', 'public, max-age=3600');
+    setPublicCache(res);
     res.send(renderPage(page, siteBase(req)));
   });
 }
@@ -155,7 +170,7 @@ app.get('/', (req, res) => {
     if (error) {
       return res.status(500).send('Não foi possível carregar a página inicial.');
     }
-    res.set('Cache-Control', 'public, max-age=3600');
+    setPublicCache(res);
     res.type('html').send(html.split('http://localhost:3000').join(base));
   });
 });

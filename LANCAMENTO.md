@@ -1,6 +1,6 @@
 # Checklist de lançamento — PegaLink
 
-**Status atual (24/11/2026):** site publicado em `https://pegalink.onrender.com` **sem Adsterra**, com domínio próprio ainda pendente. Propriedade do Google Search Console verificada e sitemap enviado e processado (25 URLs).
+**Status atual (24/11/2026):** site publicado em `https://pegalink.onrender.com` **sem Adsterra**, com domínio próprio ainda pendente. Propriedade do Google Search Console verificada e sitemap enviado e processado (25 URLs). O checkout do `pegalink.xyz` está aberto na Spaceship, mas o pagamento não foi concluído: DNS ainda não existe (`Resolve-DnsName pegalink.xyz` falha). WHOIS privado já aparece incluído de graça no carrinho.
 
 ## Regras até o lançamento com domínio próprio
 
@@ -46,6 +46,8 @@ Opções pesquisadas em 23/11/2026:
 | Cloudflare | US$ 13,50 | US$ 13,50/ano | Exige usar DNS da Cloudflare |
 
 Depois de comprar, configurar DNS/Render para o domínio final.
+
+Cloudflare (preparação feita em 24/11/2026): `server.js` envia `Cache-Control` com `s-maxage=86400` e `CDN-Cache-Control` nas páginas públicas, sitemap e robots; `/api/health` fica `no-store`; HSTS é enviado quando a requisição chega por HTTPS. Isso permite que a Cloudflare cacheie as páginas na borda e reduza os despertas do Render Free. Ainda é preciso: comprar o domínio, criar/entrar na conta Cloudflare, adicionar o site, trocar os nameservers na Spaceship e apontar `CNAME @ -> pegalink.onrender.com` (ou `A` para o IP do Render, se a Cloudflare exigir).
 
 ## 2. Adsterra
 
