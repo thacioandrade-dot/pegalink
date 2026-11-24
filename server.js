@@ -93,19 +93,32 @@ app.get('/robots.txt', (req, res) => {
 
 app.get('/sitemap.xml', (req, res) => {
   const base = siteBase(req);
-  const now = new Date().toISOString();
+  const lastmod = '2026-11-23';
+
+  function entry(pathname, priority, changefreq) {
+    const loc = `${base}${pathname}`;
+    const safe = escapeHtml(loc);
+    return (
+      `<url><loc>${safe}</loc>` +
+      `<xhtml:link rel="alternate" hreflang="pt-BR" href="${safe}"/>` +
+      `<xhtml:link rel="alternate" hreflang="x-default" href="${safe}"/>` +
+      `<lastmod>${lastmod}</lastmod><changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`
+    );
+  }
+
   const entries = [
-    `<url><loc>${escapeHtml(base)}/</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+    entry('/', '1.0', 'daily'),
     ...getPages().map((page, index) => {
       const priority = index < 3 ? '0.9' : '0.8';
-      return `<url><loc>${escapeHtml(base)}/${page.slug}</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+      return entry(`/${page.slug}`, priority, 'weekly');
     })
   ].join('');
 
+  res.set('Cache-Control', 'public, max-age=3600');
   res.type('application/xml');
   res.send(
     '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' +
     entries +
     '</urlset>'
   );

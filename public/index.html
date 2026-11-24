@@ -5,31 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1020">
   <title>PegaLink — baixe vídeos de YouTube, TikTok e Instagram pelo link</title>
-  <meta name="description" content="Baixe vídeos do YouTube, TikTok e Instagram pelo link, em MP4 ou MP3. Gratuito, rápido e sem instalar nada.">
-  <meta name="keywords" content="baixar vídeo, download youtube, download tiktok, download instagram, mp3, mp4, baixar vídeo pelo link, baixar youtube mp3, baixar reels, baixar shorts, salvar vídeo, downloader de vídeo, converter vídeo para mp3, baixar vídeo grátis">
-  <meta name="robots" content="index, follow, max-image-preview:large">
-  <meta name="googlebot" content="index, follow">
+  <meta name="description" content="Baixe vídeos do YouTube, TikTok e Instagram pelo link em MP4 ou MP3. Gratuito, sem cadastro, sem aplicativo e sem anúncios. A busca começa ao colar a URL.">
+  <meta name="keywords" content="baixar vídeo, download youtube, download tiktok, download instagram, mp3, mp4, baixar vídeo pelo link, youtube mp3, baixar reels, baixar shorts, salvar vídeo, downloader de vídeo, converter vídeo para mp3, baixar vídeo grátis, tiktok video download, baixar video tiktok sem marca d agua, baixar tiktok hd, baixador de videos do youtube, salvar reels do instagram, download video online">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
+  <meta name="googlebot" content="index, follow, max-snippet:-1">
   <meta name="author" content="PegaLink">
+  <meta name="creator" content="PegaLink">
+  <meta name="publisher" content="PegaLink">
+  <meta name="category" content="technology">
+  <meta name="google" content="notranslate">
   <meta name="language" content="pt-BR">
   <meta http-equiv="content-language" content="pt-BR">
+  <meta name="format-detection" content="telephone=no">
   <link rel="canonical" id="canonical-link" href="http://localhost:3000/">
   <link rel="alternate" id="hreflang-pt" hreflang="pt-BR" href="http://localhost:3000/">
   <link rel="alternate" id="hreflang-x" hreflang="x-default" href="http://localhost:3000/">
+  <link rel="sitemap" type="application/xml" title="Mapa do site PegaLink" href="/sitemap.xml">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PegaLink">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:title" content="PegaLink — baixe vídeos pelo link">
-  <meta property="og:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, rápido e sem cadastro.">
+  <meta property="og:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, sem cadastro, sem aplicativo e sem anúncios.">
   <meta property="og:url" id="og-url" content="http://localhost:3000/">
   <meta property="og:image" id="og-image" content="http://localhost:3000/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="PegaLink — download de vídeos pelo link">
+  <meta property="og:image:alt" content="PegaLink — download de vídeos pelo link em MP4 e MP3">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="PegaLink — baixe vídeos pelo link">
-  <meta name="twitter:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, rápido e sem cadastro.">
+  <meta name="twitter:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, sem cadastro e sem anúncios.">
   <meta name="twitter:image" id="twitter-image" content="http://localhost:3000/og-image.png">
 
   <link rel="stylesheet" href="styles.css">
@@ -37,32 +43,44 @@
   {
     "@context": "https://schema.org",
     "@graph": [
+      { "@type": "Organization", "@id": "http://localhost:3000/#organization", "name": "PegaLink", "url": "http://localhost:3000/", "logo": "http://localhost:3000/favicon.svg", "description": "Ferramenta online para salvar vídeos públicos pelo link em MP4 e MP3." },
       {
         "@type": "WebSite",
+        "@id": "http://localhost:3000/#website",
         "name": "PegaLink",
         "url": "http://localhost:3000/",
-        "inLanguage": "pt-BR"
+        "inLanguage": "pt-BR",
+        "publisher": { "@id": "http://localhost:3000/#organization" }
       },
       {
         "@type": "WebPage",
+        "@id": "http://localhost:3000/#webpage",
         "url": "http://localhost:3000/",
         "name": "PegaLink — baixe vídeos de YouTube, TikTok e Instagram pelo link",
-        "description": "Baixe vídeos do YouTube, TikTok e Instagram pelo link, em MP4 ou MP3. Gratuito, rápido e sem instalar nada.",
-        "inLanguage": "pt-BR"
+        "description": "Baixe vídeos do YouTube, TikTok e Instagram pelo link em MP4 ou MP3. Gratuito, sem cadastro, sem aplicativo e sem anúncios.",
+        "inLanguage": "pt-BR",
+        "isPartOf": { "@id": "http://localhost:3000/#website" },
+        "dateModified": "2026-11-23",
+        "primaryImageOfPage": { "@type": "ImageObject", "url": "http://localhost:3000/og-image.png", "width": 1200, "height": 630 }
       },
       {
-        "@type": "SoftwareApplication",
+        "@type": "WebApplication",
         "name": "PegaLink",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Windows, macOS, Linux, iOS, Android",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+        "browserRequirements": "Qualquer navegador moderno com JavaScript ativado",
+        "inLanguage": "pt-BR",
+        "featureList": ["Download em MP4", "Áudio em MP3", "Busca automática ao colar o link", "Escolha de qualidade", "Sem cadastro", "Sem anúncios"],
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+        "publisher": { "@id": "http://localhost:3000/#organization" }
       },
       {
         "@type": "HowTo",
         "name": "Como baixar vídeos pelo link com o PegaLink",
+        "totalTime": "PT1M",
         "step": [
           { "@type": "HowToStep", "position": 1, "name": "Copie o link", "text": "No app da plataforma, toque em Compartilhar e escolha Copiar link." },
-          { "@type": "HowToStep", "position": 2, "name": "Cole no PegaLink", "text": "Cole a URL no campo e clique em Buscar vídeo." },
+          { "@type": "HowToStep", "position": 2, "name": "Cole no PegaLink", "text": "Cole a URL no campo. A busca começa automaticamente." },
           { "@type": "HowToStep", "position": 3, "name": "Escolha e baixe", "text": "Selecione MP4 ou MP3 e salve o arquivo no seu dispositivo." }
         ]
       },
@@ -75,10 +93,13 @@
       {
         "@type": "FAQPage",
         "mainEntity": [
-          { "@type": "Question", "name": "É gratuito? Preciso criar uma conta?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, é gratuito e não pedimos cadastro. Basta colar o link do vídeo." } },
+          { "@type": "Question", "name": "É gratuito? Preciso criar uma conta?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. O PegaLink é gratuito, não pede cadastro e não mostra anúncios." } },
           { "@type": "Question", "name": "Quais sites são aceitos?", "acceptedAnswer": { "@type": "Answer", "text": "YouTube, TikTok e Instagram. Links de vídeos públicos funcionam melhor." } },
           { "@type": "Question", "name": "Posso baixar em MP3?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Depois de buscar o vídeo, escolha a opção Áudio MP3." } },
-          { "@type": "Question", "name": "Funciona no celular?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, em Android e iPhone, usando o navegador." } }
+          { "@type": "Question", "name": "Funciona no celular?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. No Android o arquivo vai para a pasta Download; no iPhone e no iPad, para a pasta Downloads do app Arquivos." } },
+          { "@type": "Question", "name": "Preciso instalar aplicativo ou extensão?", "acceptedAnswer": { "@type": "Answer", "text": "Não. Tudo acontece no navegador, no Windows, macOS, Linux, Android e iOS." } },
+          { "@type": "Question", "name": "Consigo baixar em HD?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Quando o vídeo original oferece resoluções maiores, elas aparecem na lista de formatos." } },
+          { "@type": "Question", "name": "Por que um vídeo não foi encontrado?", "acceptedAnswer": { "@type": "Answer", "text": "Vídeos privados, apagados, com restrição de idade ou que exigem login podem falhar. Confira se o link abre normalmente." } }
         ]
       }
     ]
@@ -154,8 +175,6 @@
           </div>
         </form>
 
-        <div class="ad-slot ad-leaderboard" data-ad-slot="top" hidden></div>
-
         <div class="trust-row">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg> Grátis e ilimitado</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg> Sem cadastro</span>
@@ -181,8 +200,6 @@
           <span>Os downloads são gerados no seu navegador</span>
         </div>
         <div id="formats" class="formats-grid"></div>
-
-        <div class="ad-slot ad-result" data-ad-slot="result" hidden></div>
 
         <div id="download-panel" class="download-panel" hidden>
           <div class="download-panel-top">
@@ -255,6 +272,16 @@
         <a class="feature-card" href="/tiktok-sem-marca-dagua"><h3>TikTok sem marca d'água</h3><p>Salve a versão pública disponibilizada pelo TikTok.</p></a>
         <a class="feature-card" href="/tiktok-mp3"><h3>TikTok MP3</h3><p>Extraia só o áudio dos seus vídeos do TikTok.</p></a>
         <a class="feature-card" href="/tiktok-stories"><h3>Stories do TikTok</h3><p>Tente salvar stories e slideshows públicos pelo link.</p></a>
+        <a class="feature-card" href="/tiktok-hd"><h3>TikTok em HD</h3><p>Baixe na maior resolução disponibilizada pelo vídeo.</p></a>
+        <a class="feature-card" href="/tiktok-video-download"><h3>TikTok video download</h3><p>Guia direto para salvar vídeos do TikTok pelo link.</p></a>
+        <a class="feature-card" href="/tiktok-slideshow"><h3>Slideshow do TikTok</h3><p>Salve apresentações de slides como arquivo MP4.</p></a>
+        <a class="feature-card" href="/tiktok-celular"><h3>TikTok no celular</h3><p>Android e iPhone: baixe pelo navegador, sem app.</p></a>
+        <a class="feature-card" href="/tiktok-pc"><h3>TikTok no PC</h3><p>Cole o link no computador e salve o arquivo.</p></a>
+        <a class="feature-card" href="/instagram-video"><h3>Vídeos do Instagram</h3><p>Salve posts em vídeo de contas públicas.</p></a>
+        <a class="feature-card" href="/instagram-stories"><h3>Stories do Instagram</h3><p>Tente baixar stories públicos pelo link.</p></a>
+        <a class="feature-card" href="/youtube-mp4"><h3>YouTube em MP4</h3><p>Escolha a resolução e baixe com áudio.</p></a>
+        <a class="feature-card" href="/shorts-mp3"><h3>Shorts em MP3</h3><p>Extraia só o áudio dos vídeos curtos.</p></a>
+        <a class="feature-card" href="/converter-video-mp3"><h3>Converter para MP3</h3><p>Transforme o áudio do vídeo em MP3 direto no navegador.</p></a>
       </div>
     </section>
 
@@ -264,15 +291,16 @@
         <h3>Dúvidas rápidas antes de começar.</h3>
       </div>
       <div class="faq-list">
-        <details><summary>É gratuito? Preciso criar uma conta?</summary><p>Sim, é gratuito e não pedimos cadastro. Basta colar o link do vídeo.</p></details>
+        <details><summary>É gratuito? Preciso criar uma conta?</summary><p>Sim. O PegaLink é gratuito, não pede cadastro e não mostra anúncios. Basta colar o link do vídeo.</p></details>
         <details><summary>Quais sites são aceitos?</summary><p>YouTube, TikTok e Instagram. Links de vídeos públicos funcionam melhor.</p></details>
         <details><summary>Por que um vídeo não foi encontrado?</summary><p>Vídeos privados, apagados, com restrição de idade ou que exigem login podem falhar. Verifique se o link abre normalmente no navegador.</p></details>
         <details><summary>Posso baixar em MP3?</summary><p>Sim. Depois de buscar o vídeo, escolha a opção “Áudio MP3”.</p></details>
-        <details><summary>Funciona no celular?</summary><p>Sim, em Android e iPhone, usando o navegador. Em iOS, o arquivo pode ser salvo no app Arquivos.</p></details>
+        <details><summary>Funciona no celular?</summary><p>Sim. No Android o arquivo vai para a pasta Download; no iPhone e no iPad, para a pasta Downloads do app Arquivos.</p></details>
+        <details><summary>Preciso instalar aplicativo ou extensão?</summary><p>Não. Tudo acontece no navegador, no Windows, macOS, Linux, Android e iOS.</p></details>
+        <details><summary>Consigo baixar em HD?</summary><p>Sim. Quando o vídeo original oferece resoluções maiores, elas aparecem na lista de formatos.</p></details>
         <details><summary>Isso é oficial do YouTube, TikTok ou Instagram?</summary><p>Não. Este é um projeto independente e não é afiliado a essas empresas.</p></details>
       </div>
     </section>
-    <div class="ad-slot ad-footer" data-ad-slot="footer" hidden></div>
   </main>
 
   <footer class="site-footer">
@@ -292,6 +320,16 @@
         <a href="/tiktok-sem-marca-dagua">TikTok sem marca d'água</a>
         <a href="/tiktok-mp3">TikTok MP3</a>
         <a href="/tiktok-stories">Stories do TikTok</a>
+        <a href="/tiktok-hd">TikTok HD</a>
+        <a href="/tiktok-video-download">TikTok video download</a>
+        <a href="/tiktok-slideshow">Slideshow do TikTok</a>
+        <a href="/tiktok-celular">TikTok no celular</a>
+        <a href="/tiktok-pc">TikTok no PC</a>
+        <a href="/instagram-video">Vídeos do Instagram</a>
+        <a href="/instagram-stories">Stories do Instagram</a>
+        <a href="/youtube-mp4">YouTube MP4</a>
+        <a href="/shorts-mp3">Shorts MP3</a>
+        <a href="/converter-video-mp3">Converter para MP3</a>
         <a href="/sitemap.xml">Mapa do site</a>
       </nav>
       <p>Use apenas para conteúdo próprio ou autorizado. Respeite direitos autorais e os termos das plataformas.</p>
@@ -299,8 +337,6 @@
     </div>
   </footer>
 
-  <script src="ads-config.js"></script>
-  <script src="ads.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
