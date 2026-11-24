@@ -19,6 +19,10 @@ Reforço de conteúdo no mesmo deploy: seções exclusivas “Sobre” nas pági
 
 Sitemap reenviado ao GSC após o deploy: processado, 25 páginas encontradas.
 
+Monitoramento: lembrete para pedir indexação em 25/11 às 10h e verificação diária às 9h que só avisa quando o Google indexar.
+
+Acessos: como o Render Free não oferece Request logs, `server.js` registra cada visita às páginas HTML em `[acesso] data hora caminho status` nos Application logs. Chamadas `/api/` e arquivos estáticos não são registrados.
+
 Site ainda não indexado em 24/11/2026: GSC mostra “O URL não está no Google”, mas o teste em tempo real confirmou “O URL está disponível para o Google” e “É possível indexar a página”. A cota de “Solicitar indexação” continua excedida. Lembrete automático criado para 25/11 às 10h (America/Sao_Paulo).
 
 ## 1. Domínio

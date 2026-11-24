@@ -37,6 +37,21 @@ app.use((_req, res, next) => {
 });
 app.use(express.json({ limit: '16kb' }));
 
+// O Render Free não oferece "Request logs". Registramos apenas as visitas às
+// páginas HTML para que seja possível acompanhar os acessos em Application logs.
+app.use((req, res, next) => {
+  const isPageView =
+    req.method === 'GET' &&
+    !req.path.startsWith('/api/') &&
+    !path.extname(req.path) &&
+    !req.path.startsWith('/google');
+  if (!isPageView) return next();
+  res.on('finish', () => {
+    console.log(`[acesso] ${new Date().toISOString()} ${req.path} ${res.statusCode}`);
+  });
+  return next();
+});
+
 function rateLimit(req, res, next) {
   const ip = req.ip || 'desconhecido';
   const now = Date.now();
