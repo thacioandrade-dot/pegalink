@@ -284,7 +284,17 @@ app.post('/api/download', rateLimit, async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
+app.use(express.static(path.join(__dirname, 'public'), {
+  index: 'index.html',
+  setHeaders(res, filePath) {
+    // CSS, JS, SVG e imagens podem ficar na Cloudflare por 24h sem risco:
+    // são arquivos públicos e imutáveis até o próximo deploy.
+    if (/\.(?:css|js|svg|png|jpe?g|webp|ico|woff2?)$/i.test(filePath)) {
+      res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
+      res.set('CDN-Cache-Control', 'public, max-age=86400');
+    }
+  }
+}));
 
 app.use((error, _req, res, _next) => {
   if (error instanceof SyntaxError && error.status === 400) {
