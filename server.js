@@ -93,7 +93,7 @@ app.get('/robots.txt', (req, res) => {
 
 app.get('/sitemap.xml', (req, res) => {
   const base = siteBase(req);
-  const lastmod = '2026-11-23';
+  const lastmod = '2026-11-24';
 
   function entry(pathname, priority, changefreq) {
     const loc = `${base}${pathname}`;
@@ -130,6 +130,20 @@ for (const page of getPages()) {
     res.send(renderPage(page, siteBase(req)));
   });
 }
+
+// A homepage é um arquivo estático, mas seus metadados precisam sair do servidor
+// já com a URL pública correta. O Google não deve ver `localhost` como canônico.
+const homepagePath = path.join(__dirname, 'public', 'index.html');
+app.get('/', (req, res) => {
+  const base = siteBase(req);
+  fs.readFile(homepagePath, 'utf8', (error, html) => {
+    if (error) {
+      return res.status(500).send('Não foi possível carregar a página inicial.');
+    }
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.type('html').send(html.split('http://localhost:3000').join(base));
+  });
+});
 
 app.post('/api/info', rateLimit, async (req, res) => {
   const { url, platform } = validateVideoUrl(req.body?.url);

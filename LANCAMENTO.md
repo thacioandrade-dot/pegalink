@@ -13,11 +13,17 @@ Todos os commits até `03038c0` foram enviados ao GitHub e estão no ar.
 Validação local (Lighthouse em `http://localhost:3100/`): SEO 100, Acessibilidade 100, Boas Práticas 100, sem falhas.
 Validação no ar após deploy manual: `/mapa-do-site` com `ItemList`, sitemap com 25 URLs e arquivo de verificação do Google OK.
 
+Correção pendente de deploy (24/11/2026): a homepage estava com `canonical`, `og:url` e JSON-LD apontando para `http://localhost:3000` no HTML bruto. `server.js` agora substitui isso pela URL pública da requisição antes de servir o HTML.
+
+Site ainda não indexado em 24/11/2026: GSC mostra “O URL não está no Google” e a cota de “Solicitar indexação” continua excedida. Lembrete automático criado para 25/11 às 10h (America/Sao_Paulo).
+
 ## 1. Domínio
 
-Domínio escolhido: **.xyz**, registrador **Spaceship** (cupom `XYZ52`), com renovação de US$ 13,97/ano.
+Domínio escolhido: **.xyz**, registrador **Spaceship** (cupom `XYZ52`), com renovação de US$ 13,97/ano e **WHOIS privado grátis para sempre** (confirmado em 24/11/2026; o serviço é o Withheld for Privacy e é aplicado automaticamente em domínios elegíveis, incluindo .xyz).
 
 Nome esperado: `pegalink.xyz`.
+
+No checkout, a taxa ICANN de US$ 0,20 pode ser adicionada, e o WHOIS privado deve aparecer como US$ 0,00.
 
 Opções pesquisadas em 23/11/2026:
 
