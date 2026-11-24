@@ -70,6 +70,7 @@ const yt = checkPlatform('youtube', youtubeHorizontal, [
   'SD 360p',
   'Qualidade leve'
 ]);
+assert.ok(yt[0].selector.startsWith('bestvideo+bestaudio'), 'Melhor qualidade deve usar a maior resolução real');
 const yt1080 = yt.find((option) => option.label === 'Full HD 1080p').selector;
 assert.ok(yt1080.includes('[height<=1080]'), '1080p horizontal precisa usar altura');
 assert.ok(yt1080.includes('[width<=1080]'), '1080p vertical precisa usar largura');
