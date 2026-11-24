@@ -62,6 +62,7 @@ const HOSTS = {
 };
 
 let currentVideo = null;
+let autoSearchTimer = null;
 
 function detectPlatform(value) {
   try {
@@ -73,6 +74,49 @@ function detectPlatform(value) {
     /* URL incompleta enquanto digita */
   }
   return null;
+}
+
+function extractUrl(text) {
+  const raw = String(text || '').trim();
+  const match = raw.match(/https?:\/\/[^\s<>"']+/i);
+  if (!match) return raw;
+  return match[0].replace(/[.,!?;:)\]}]+$/, '');
+}
+
+function isAcceptedLink(value) {
+  const text = String(value || '').trim();
+  if (!text) return false;
+  try {
+    new URL(text);
+    return detectPlatform(text) !== null;
+  } catch {
+    return false;
+  }
+}
+
+function clearAutoSearch() {
+  if (autoSearchTimer) {
+    clearTimeout(autoSearchTimer);
+    autoSearchTimer = null;
+  }
+}
+
+function scheduleAutoSearch(delay = 150) {
+  clearAutoSearch();
+  if (!isAcceptedLink(input.value)) return;
+  if (searchBtn.disabled) return;
+  autoSearchTimer = setTimeout(() => {
+    autoSearchTimer = null;
+    if (isAcceptedLink(input.value) && !searchBtn.disabled) {
+      form.requestSubmit();
+    }
+  }, delay);
+}
+
+function applyPastedText(text) {
+  input.value = extractUrl(text);
+  input.dispatchEvent(new Event('input'));
+  scheduleAutoSearch();
 }
 
 function showError(message, detail) {
@@ -305,15 +349,22 @@ input.addEventListener('input', () => {
 pasteBtn.addEventListener('click', async () => {
   try {
     const text = await navigator.clipboard.readText();
-    input.value = text.trim();
-    input.dispatchEvent(new Event('input'));
+    applyPastedText(text);
     input.focus();
   } catch {
     showError('Não consegui ler a área de transferência. Use Ctrl+V (ou Cmd+V) para colar.');
   }
 });
 
+input.addEventListener('paste', (event) => {
+  const text = event.clipboardData && event.clipboardData.getData('text');
+  if (!text) return;
+  event.preventDefault();
+  applyPastedText(text);
+});
+
 clearBtn.addEventListener('click', () => {
+  clearAutoSearch();
   input.value = '';
   chip.hidden = true;
   clearError();
@@ -322,6 +373,7 @@ clearBtn.addEventListener('click', () => {
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
+  clearAutoSearch();
   clearError();
 
   const url = input.value.trim();
@@ -357,6 +409,7 @@ form.addEventListener('submit', async (event) => {
 });
 
 newSearchBtn.addEventListener('click', () => {
+  clearAutoSearch();
   resetResult();
   input.value = '';
   chip.hidden = true;
