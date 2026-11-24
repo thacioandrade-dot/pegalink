@@ -1,6 +1,6 @@
 # Checklist de lançamento — PegaLink
 
-**Status atual (24/11/2026):** site publicado em `https://pegalink.onrender.com` **sem Adsterra**, com domínio próprio ainda pendente. Propriedade do Google Search Console verificada e sitemap enviado e processado (25 URLs). O checkout do `pegalink.xyz` está aberto na Spaceship, mas o pagamento não foi concluído: DNS ainda não existe (`Resolve-DnsName pegalink.xyz` falha). WHOIS privado já aparece incluído de graça no carrinho.
+**Status atual (24/11/2026):** site publicado em `https://pegalink.onrender.com` **sem Adsterra**, com o domínio final `https://pegalink.xyz` em configuração. Domínio comprado via Hostinger com Pix (R$ 8,08), registrado e ativo até 24/11/2027; WHOIS privado e bloqueio de transferência ativos. Verificação de contato da ICANN pendente no e-mail até 08/12/2026. Cloudflare já configurada na conta `conta do proprietario`: zona `pegalink.xyz` no plano Free, CNAMEs `@` e `www` para `pegalink.onrender.com` com proxy laranja, Always Use HTTPS, HSTS 12 meses com `includeSubDomains` e `nosniff`, TLS mínimo 1.2, Bot Fight Mode e WAF gerenciado ativos, modo SSL **Full (Strict)**. Nameservers da Hostinger trocados para `aria.ns.cloudflare.com` / `sevki.ns.cloudflare.com`; propagação ainda em andamento (monitor automático `aut_20c0d546f001fxZmmO7RwFaYEd`). O `onrender.com` aparece apenas como destino interno do DNS — o endereço público é `pegalink.xyz`. Propriedade do GSC verificada no link antigo e sitemap processado (25 URLs).
 
 ## Regras até o lançamento com domínio próprio
 
@@ -30,7 +30,7 @@ Site ainda não indexado em 24/11/2026: GSC mostra “O URL não está no Google
 
 ## 1. Domínio
 
-Domínio escolhido: **.xyz**, registrador **Spaceship** (cupom `XYZ52`), com renovação de US$ 13,97/ano e **WHOIS privado grátis para sempre** (confirmado em 24/11/2026; o serviço é o Withheld for Privacy e é aplicado automaticamente em domínios elegíveis, incluindo .xyz).
+Domínio registrado: **`pegalink.xyz`** na **Hostinger Brasil**, 1º ano por R$ 8,08 (R$ 6,99 + R$ 1,09 de ICANN), pago com Pix. **WHOIS privado grátis ativo** e **bloqueio de transferência ativo**. Renovação: R$ 103,99/ano + ICANN. A Spaceship foi descartada porque não aceita Pix e o cupom `XYZ52` foi bloqueado como falso positivo de VPN no navegador automatizado.
 
 Nome esperado: `pegalink.xyz`.
 
@@ -40,14 +40,14 @@ Opções pesquisadas em 23/11/2026:
 
 | Registrador | 1º ano | Renovação | Observação |
 |---|---:|---:|---|
-| Spaceship | US$ 0,95 com cupom `XYZ52` | US$ 13,97/ano | **Escolhido — menor primeiro ano** |
+| Spaceship | US$ 0,95 com cupom `XYZ52` | US$ 13,97/ano | Descartada: não aceita Pix e cupom bloqueado |
 | Porkbun | US$ 1,29 | US$ 14,21/ano | WHOIS privado gratuito |
 | PublicDomainRegistry | US$ 8,00 | US$ 8,00/ano | Melhor custo fixo a longo prazo |
 | Cloudflare | US$ 13,50 | US$ 13,50/ano | Exige usar DNS da Cloudflare |
 
-Depois de comprar, configurar DNS/Render para o domínio final.
+DNS/Render para o domínio final já preparados: `pegalink.xyz` e `www.pegalink.xyz` cadastrados como domínios customizados no Render; `www` redireciona para o apex. Falta apenas a propagação dos nameservers e a verificação desses domínios no Render.
 
-Cloudflare (preparação feita em 24/11/2026): `server.js` envia `Cache-Control` com `s-maxage=86400` e `CDN-Cache-Control` nas páginas públicas, sitemap e robots; `/api/health` fica `no-store`; HSTS é enviado quando a requisição chega por HTTPS. Isso permite que a Cloudflare cacheie as páginas na borda e reduza os despertas do Render Free. Ainda é preciso: comprar o domínio, criar/entrar na conta Cloudflare, adicionar o site, trocar os nameservers na Spaceship e apontar `CNAME @ -> pegalink.onrender.com` (ou `A` para o IP do Render, se a Cloudflare exigir).
+Cloudflare (configurada em 24/11/2026): `server.js` envia `Cache-Control` com `s-maxage=86400` e `CDN-Cache-Control` em páginas, sitemap, robots **e arquivos estáticos**; `/api/health` fica `no-store`; HSTS é enviado quando a requisição chega por HTTPS. O keep-alive `aut_20bdd78f6001sKl9a70Od5sp2F` dá ping a cada 5 minutos para o Render não dormir. Deploy `bfd8610` publicou: cache de `/api/info` por 10 minutos (`X-Cache: HIT/MISS`), opções HD 1080p/720p e SD 480p/360p, `preload` do CSS e `defer` no JS. Na Cloudflare: DNS com proxy laranja, SSL Full (Strict), Always Use HTTPS, HSTS 12 meses, TLS 1.2+, Bot Fight Mode, WAF gerenciado e DDoS sempre ativos. **Não** ativar “I’m Under Attack Mode” — quebra downloads/API. Após a propagação: verificar domínios no Render, testar HTTPS/canonical no domínio final, criar propriedade `https://pegalink.xyz/` no GSC, enviar sitemap e pedir indexação.
 
 ## 2. Adsterra
 
