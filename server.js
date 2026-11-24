@@ -213,7 +213,7 @@ app.post('/api/download', rateLimit, async (req, res) => {
   const body = req.body || {};
   const { url, platform } = validateVideoUrl(body.url);
 
-  const option = resolveOption(body.quality);
+  const option = resolveOption(body.quality, platform);
   if (!option) {
     throw new ValidationError('Escolha um formato de download válido.');
   }

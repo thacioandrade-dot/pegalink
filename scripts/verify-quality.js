@@ -31,8 +31,17 @@ const tiktok = {
   id: 'tt-1',
   title: 'Teste TikTok',
   formats: [
-    { format_id: 'h264_540p_1', vcodec: 'h264', width: 608, height: 1080 },
-    { format_id: 'h264_360p_1', vcodec: 'h264', width: 405, height: 720 }
+    { format_id: 'play', vcodec: 'h264', acodec: 'aac', width: 1080, height: 1920, tbr: 2500, url: 'https://cdn/play', format_note: 'Direct video' },
+    { format_id: 'download', vcodec: 'h264', acodec: 'aac', width: 1080, height: 1920, tbr: 1800, url: 'https://cdn/download', format_note: 'watermarked' },
+    { format_id: 'h264_720p_1', vcodec: 'h264', acodec: 'aac', width: 720, height: 1280, tbr: 900, url: 'https://cdn/720', format_note: 'Playback video' }
+  ]
+};
+
+const tiktokSingle = {
+  id: 'tt-2',
+  title: 'Teste TikTok com um só arquivo',
+  formats: [
+    { format_id: 'play', vcodec: 'h264', acodec: 'aac', width: 1080, height: 1920, tbr: 2500, url: 'https://cdn/play' }
   ]
 };
 
@@ -83,20 +92,35 @@ const short = checkPlatform('youtube', youtubeShort, [
 ]);
 assert.equal(short.some((option) => option.label === 'Full HD 1080p'), false, 'Short 720p não deve anunciar 1080p');
 
-const tt = checkPlatform('tiktok', tiktok, ['Melhor qualidade', 'Qualidade leve (SD 405p)']);
-const ttBest = tt.find((option) => option.label === 'Melhor qualidade');
-const ttLight = tt.find((option) => option.label.startsWith('Qualidade leve'));
-assert.equal(ttBest.selector, 'h264_540p_1');
-assert.equal(ttLight.selector, 'h264_360p_1');
-assert.notEqual(ttBest.id, ttLight.id);
+const tt = checkPlatform('tiktok', tiktok, ['Melhor qualidade', 'Full HD 1080p', 'HD 720p']);
+assert.deepEqual(labels(tt), ['Melhor qualidade', 'Full HD 1080p', 'HD 720p', 'Áudio MP3']);
+const ttBest = tt[0];
+const ttFull = tt[1];
+const ttHd = tt[2];
+assert.ok(ttBest.selector.startsWith('bestvideo'), 'Melhor qualidade do TikTok deve usar o original');
+assert.ok(ttBest.selector.includes('watermark'), 'Melhor qualidade do TikTok deve evitar vídeo com marca d\'água');
+assert.equal(ttFull.id, 'resize-1080', 'Full HD deve vir do original com compressão maior');
+assert.equal(ttFull.resize, 1080);
+assert.equal(ttHd.id, 'fmt-h264_720p_1', 'HD 720p deve usar o arquivo 720p real quando existe');
+assert.equal(new Set(tt.map((option) => option.id)).size, 4, 'TikTok deve ter só 4 botões distintos');
+
+const ttSingle = checkPlatform('tiktok', tiktokSingle, ['Melhor qualidade', 'Full HD 1080p', 'HD 720p']);
+assert.deepEqual(labels(ttSingle), ['Melhor qualidade', 'Full HD 1080p', 'HD 720p', 'Áudio MP3']);
+assert.equal(ttSingle[1].id, 'resize-1080');
+assert.equal(ttSingle[2].id, 'resize-720');
+assert.equal(ttSingle[2].resize, 720);
 
 checkPlatform('instagram', instagram, ['Melhor qualidade', 'Full HD 1080p', 'HD 720p']);
 
-for (const id of ['best', '1080p', '720p', '480p', '360p', 'light', 'audio', 'fmt-h264_360p_1']) {
+for (const id of ['best', '1080p', '720p', '480p', '360p', 'light', 'audio', 'fmt-h264_720p_1', 'resize-1080', 'resize-720']) {
   assert.ok(resolveOption(id), `resolveOption(${id}) retornou nulo`);
 }
 assert.ok(resolveOption('1080p').selector.includes('[height<=1080]'));
 assert.ok(resolveOption('1080p').selector.includes('[width<=1080]'));
-assert.equal(resolveOption('fmt-h264_360p_1').selector, 'h264_360p_1');
+assert.equal(resolveOption('fmt-h264_720p_1').selector, 'h264_720p_1');
+assert.equal(resolveOption('resize-1080').resize, 1080);
+assert.equal(resolveOption('resize-720').crf, 23);
+assert.ok(resolveOption('best', 'tiktok').selector.includes('watermark'), 'resolveOption deve respeitar a plataforma');
+assert.ok(resolveOption('resize-1080', 'tiktok').selector.includes('watermark'));
 
 console.log('\nOK: todas as plataformas oferecem melhor qualidade, qualidade inferior e MP3.');
