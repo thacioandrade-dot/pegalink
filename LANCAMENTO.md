@@ -21,7 +21,10 @@ Sitemap reenviado ao GSC após o deploy: processado, 25 páginas encontradas.
 
 Monitoramento: lembrete para pedir indexação em 25/11 às 10h e verificação diária às 9h que só avisa quando o Google indexar.
 
-Acessos: como o Render Free não oferece Request logs, `server.js` registra cada visita às páginas HTML em `[acesso] data hora caminho status` nos Application logs. Chamadas `/api/` e arquivos estáticos não são registrados.
+Acessos: como o Render Free não oferece Request logs, `server.js` registra cada visita às páginas HTML em `[acesso] data hora caminho status` nos Application logs. Chamadas `/api/`, arquivos estáticos e a página de verificação do Google não são registrados. Verificado no ar no deploy `1819c41`: os acessos a `/` e `/mapa-do-site` apareceram nos logs.
+
+Auditoria no ar (Lighthouse): SEO 100, Acessibilidade 100, Boas Práticas 100, sem falhas.
+Qualidade das 24 páginas SEO: títulos únicos, nenhuma falha de renderização.
 
 Site ainda não indexado em 24/11/2026: GSC mostra “O URL não está no Google”, mas o teste em tempo real confirmou “O URL está disponível para o Google” e “É possível indexar a página”. A cota de “Solicitar indexação” continua excedida. Lembrete automático criado para 25/11 às 10h (America/Sao_Paulo).
 
