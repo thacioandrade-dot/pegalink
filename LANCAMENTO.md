@@ -13,9 +13,13 @@ Todos os commits até `03038c0` foram enviados ao GitHub e estão no ar.
 Validação local (Lighthouse em `http://localhost:3100/`): SEO 100, Acessibilidade 100, Boas Práticas 100, sem falhas.
 Validação no ar após deploy manual: `/mapa-do-site` com `ItemList`, sitemap com 25 URLs e arquivo de verificação do Google OK.
 
-Correção pendente de deploy (24/11/2026): a homepage estava com `canonical`, `og:url` e JSON-LD apontando para `http://localhost:3000` no HTML bruto. `server.js` agora substitui isso pela URL pública da requisição antes de servir o HTML.
+Correção aplicada e publicada em 24/11/2026 (deploy `dcb8042`): a homepage estava com `canonical`, `og:url` e JSON-LD apontando para `http://localhost:3000` no HTML bruto. `server.js` agora substitui isso pela URL pública da requisição antes de servir o HTML. Verificado no ar: canonical `https://pegalink.onrender.com/`.
 
-Site ainda não indexado em 24/11/2026: GSC mostra “O URL não está no Google” e a cota de “Solicitar indexação” continua excedida. Lembrete automático criado para 25/11 às 10h (America/Sao_Paulo).
+Reforço de conteúdo no mesmo deploy: seções exclusivas “Sobre” nas páginas YouTube, TikTok, Instagram, MP3, MP4 e Shorts.
+
+Sitemap reenviado ao GSC após o deploy: processado, 25 páginas encontradas.
+
+Site ainda não indexado em 24/11/2026: GSC mostra “O URL não está no Google”, mas o teste em tempo real confirmou “O URL está disponível para o Google” e “É possível indexar a página”. A cota de “Solicitar indexação” continua excedida. Lembrete automático criado para 25/11 às 10h (America/Sao_Paulo).
 
 ## 1. Domínio
 
