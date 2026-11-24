@@ -45,6 +45,17 @@ const tiktokSingle = {
   ]
 };
 
+// O yt-dlp cria IDs terminados em -0, -1 para os espelhos de um mesmo formato.
+const tiktokMirrors = {
+  id: 'tt-3',
+  title: 'Teste TikTok com espelhos do mesmo arquivo',
+  formats: [
+    { format_id: 'bytevc1_1080p_808907-0', vcodec: 'h265', acodec: 'aac', width: 1080, height: 1920, tbr: 2500, url: 'https://cdn/a' },
+    { format_id: 'bytevc1_1080p_808907-1', vcodec: 'h265', acodec: 'aac', width: 1080, height: 1920, tbr: 2500, url: 'https://cdn/b' },
+    { format_id: 'h264_720p_504085-0', vcodec: 'h264', acodec: 'aac', width: 720, height: 1280, tbr: 900, url: 'https://cdn/c' }
+  ]
+};
+
 const instagram = {
   id: 'ig-1',
   title: 'Teste Instagram',
@@ -109,6 +120,10 @@ assert.deepEqual(labels(ttSingle), ['Melhor qualidade', 'Full HD 1080p', 'HD 720
 assert.equal(ttSingle[1].id, 'resize-1080');
 assert.equal(ttSingle[2].id, 'resize-720');
 assert.equal(ttSingle[2].resize, 720);
+
+const ttMirrors = buildFormatOptions(tiktokMirrors, 'tiktok');
+assert.equal(ttMirrors[1].id, 'resize-1080', 'espelhos do mesmo arquivo não são Full HD diferente');
+assert.equal(ttMirrors[2].id, 'fmt-h264_720p_504085-0');
 
 checkPlatform('instagram', instagram, ['Melhor qualidade', 'Full HD 1080p', 'HD 720p']);
 
