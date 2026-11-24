@@ -6,10 +6,11 @@ Projeto independente: não usa o nome, o logo nem os textos do site de referênc
 
 ## Site publicado
 
-- **URL:** https://pegalink.onrender.com
-- **Hospedagem:** Render (plano Free)
+- **URL pública:** https://pegalink.xyz
+- **Hospedagem:** Render (plano Free), atrás do Cloudflare
+- **Privacidade:** WHOIS do domínio privado, origem escondida pelo proxy da Cloudflare, sem anúncios, sem rastreadores e sem cadastro
 
-> No plano Free o serviço dorme após inatividade; a primeira requisição pode demorar ~50 s para acordar.
+> O endereço `onrender.com` é apenas o destino interno do DNS; o link público é `pegalink.xyz`.
 
 ## Requisitos
 
@@ -27,6 +28,8 @@ npm run dev
 Abra **http://localhost:3000**.
 
 Para rodar sem recarregar ao editar, use `npm start`.
+
+Para conferir se todas as plataformas continuam oferecendo melhor qualidade, qualidade inferior e MP3: `node scripts/verify-quality.js`.
 
 ## Como funciona
 
