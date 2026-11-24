@@ -110,26 +110,26 @@ const short = checkPlatform('youtube', youtubeShort, [
 ]);
 assert.equal(short.some((option) => option.label === 'Full HD 1080p'), false, 'Short 720p não deve anunciar 1080p');
 
-const tt = checkPlatform('tiktok', tiktok, ['Qualidade superior', 'Full HD 1080p', 'HD 720p'], false);
-assert.deepEqual(labels(tt), ['Qualidade superior', 'Full HD 1080p', 'HD 720p'], 'TikTok deve ter exatamente superior + 1080p + 720p');
+const tt = checkPlatform('tiktok', tiktok, ['Full HD 1080p', 'HD 720p', 'Áudio MP3']);
+assert.deepEqual(labels(tt), ['Full HD 1080p', 'HD 720p', 'Áudio MP3'], 'TikTok deve ter exatamente Full HD + HD comprimido + MP3');
 const ttBest = tt[0];
-assert.equal(ttBest.id, 'orig-play', 'O botão superior deve apontar para o ID exato do original');
-assert.equal(ttBest.selector, 'play', 'O botão superior não pode usar seletor genérico');
-assert.ok(!ttBest.fallbacks.some((item) => item === 'best'), 'O botão superior não pode cair para best');
-assert.equal(ttBest.detail.includes('sem recompressão'), true, 'O detalhe deve dizer que o arquivo é real e sem recompressão');
-assert.equal(tt[1].id, 'fullhd-play', 'Full HD deve usar o melhor arquivo 1080p, sem recompressão');
-assert.equal(tt[2].id, 'fmt-h264_720p_1', 'HD 720p deve usar o arquivo 720p real');
+assert.equal(ttBest.id, 'orig-play', 'O botão Full HD deve apontar para o ID exato do melhor arquivo');
+assert.equal(ttBest.selector, 'play', 'O botão Full HD não pode usar seletor genérico');
+assert.ok(!ttBest.fallbacks.some((item) => item === 'best'), 'O botão Full HD não pode cair para best');
+assert.equal(ttBest.detail.includes('sem recompressão'), true, 'O detalhe deve dizer que o arquivo é original e sem recompressão');
+assert.equal(tt[1].id, 'fmt-h264_720p_1', 'HD 720p deve usar o arquivo comprimido real');
+assert.equal(tt[1].detail.includes('comprimida'), true, 'HD deve ser descrito como alta qualidade comprimida');
+assert.equal(tt[2].id, 'audio', 'MP3 deve estar sempre presente');
 
-const ttSingle = checkPlatform('tiktok', tiktokSingle, ['Qualidade superior', 'Full HD 1080p'], false);
-assert.deepEqual(labels(ttSingle), ['Qualidade superior', 'Full HD 1080p'], 'sem 720p real, não anunciar HD 720p');
+const ttSingle = checkPlatform('tiktok', tiktokSingle, ['Full HD 1080p', 'Áudio MP3']);
+assert.deepEqual(labels(ttSingle), ['Full HD 1080p', 'Áudio MP3'], 'sem HD comprimido real, não anunciar HD 720p');
 
 const ttMirrors = buildFormatOptions(tiktokMirrors, 'tiktok');
-assert.deepEqual(labels(ttMirrors), ['Qualidade superior', 'Full HD 1080p', 'HD 720p']);
+assert.deepEqual(labels(ttMirrors), ['Full HD 1080p', 'HD 720p', 'Áudio MP3']);
 assert.equal(ttMirrors[0].id, 'orig-bytevc1_1080p_808907-0');
 assert.equal(ttMirrors[0].selector, 'bytevc1_1080p_808907-0');
 assert.deepEqual(ttMirrors[0].fallbacks, ['bytevc1_1080p_808907-1', 'bytevc1_1080p_808907-2'], 'espelhos só como fallback da mesma qualidade');
-assert.equal(ttMirrors[1].id, 'fullhd-bytevc1_1080p_808907-0');
-assert.equal(ttMirrors[2].id, 'fmt-h264_720p_504085-0');
+assert.equal(ttMirrors[1].id, 'fmt-h264_720p_504085-0');
 
 checkPlatform('instagram', instagram, ['Melhor qualidade', 'Download rápido', 'Full HD 1080p', 'HD 720p']);
 
@@ -146,4 +146,4 @@ assert.ok(resolveOption('best', 'tiktok').selector.includes('watermark'), 'resol
 assert.deepEqual(resolveOption('best', 'tiktok').fallbacks, [], 'TikTok best não pode degradar para best genérico');
 assert.equal(resolveOption('resize-1080'), null, 'opções de recompressão não devem ser aceitas');
 
-console.log('\nOK: TikTok tem exatamente Qualidade superior (original), Full HD 1080p e HD 720p; YouTube/Instagram mantêm melhor qualidade, rápido e MP3.');
+console.log('\nOK: TikTok tem Full HD (melhor arquivo), HD 720p comprimido e MP3; YouTube/Instagram mantêm melhor qualidade, rápido e MP3.');
