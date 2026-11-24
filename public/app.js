@@ -75,8 +75,10 @@ function detectPlatform(value) {
   return null;
 }
 
-function showError(message) {
-  errorBox.textContent = message;
+function showError(message, detail) {
+  const text = String(message || '').trim();
+  const extra = String(detail || '').trim();
+  errorBox.textContent = extra && extra.toLowerCase() !== text.toLowerCase() ? `${text} (${extra})` : text;
   errorBox.hidden = false;
 }
 
@@ -215,7 +217,9 @@ async function startDownload(option, button) {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      throw new Error(data.error || 'Não foi possível gerar o download.');
+      const error = new Error(data.error || 'Não foi possível gerar o download.');
+      error.detail = data.detail;
+      throw error;
     }
 
     const total = Number(response.headers.get('Content-Length')) || 0;
@@ -255,7 +259,8 @@ async function startDownload(option, button) {
     finishSuccess(received, total > 0);
   } catch (error) {
     downloadStatus.textContent = 'Não foi possível baixar';
-    downloadDetail.textContent = error.message || 'Tente novamente em instantes.';
+    const detail = error.detail ? ` Detalhe: ${error.detail}` : '';
+    downloadDetail.textContent = `${error.message || 'Tente novamente em instantes.'}${detail}`;
     downloadPercent.textContent = '';
     progressBar.style.width = '100%';
     progressBar.classList.add('is-error');
@@ -337,13 +342,15 @@ form.addEventListener('submit', async (event) => {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(data.error || 'Não foi possível buscar o vídeo.');
+      const error = new Error(data.error || 'Não foi possível buscar o vídeo.');
+      error.detail = data.detail;
+      throw error;
     }
 
     renderResult({ ...data, url });
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (error) {
-    showError(error.message || 'Tente novamente em instantes.');
+    showError(error.message || 'Tente novamente em instantes.', error.detail);
   } finally {
     setLoading(false);
   }
