@@ -31,6 +31,11 @@ Para rodar sem recarregar ao editar, use `npm start`.
 
 Para conferir se todas as plataformas continuam oferecendo melhor qualidade, qualidade inferior e MP3: `node scripts/verify-quality.js`.
 
+Opções de download:
+
+- **YouTube e Instagram:** “Melhor qualidade” (vídeo + áudio no teto real), “Download rápido” (MP4 progressivo, sem conversão), resoluções reais quando existem (4K/2K/1080p/720p/480p/360p), “Qualidade leve” e MP3.
+- **TikTok:** o botão superior baixa o **ID exato do arquivo original** sem marca d'água e sem recompressão; abaixo aparecem 720p/480p/360p apenas quando são arquivos realmente distintos, além do MP3. Espelhos CDN (`-0`, `-1`) não viram botões diferentes e os fallbacks nunca caem para `best` genérico.
+
 ## Como funciona
 
 | Camada | Tecnologia |

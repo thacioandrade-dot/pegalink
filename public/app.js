@@ -64,6 +64,11 @@ const HOSTS = {
 let currentVideo = null;
 let autoSearchTimer = null;
 
+// Cache local da sessão: repetir a mesma URL não espera nem o info do servidor.
+// O servidor também mantém cache por 10 minutos; este aqui evita a ida e volta.
+const infoMemory = new Map();
+const INFO_MEMORY_MAX = 20;
+
 function detectPlatform(value) {
   try {
     const host = new URL(value).hostname.toLowerCase();
@@ -383,16 +388,23 @@ form.addEventListener('submit', async (event) => {
   resetResult();
 
   try {
-    const response = await fetch('/api/info', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url })
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      const error = new Error(data.error || 'Não foi possível buscar o vídeo.');
-      error.detail = data.detail;
-      throw error;
+    let data = infoMemory.get(url);
+    if (!data) {
+      const response = await fetch('/api/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const error = new Error(data.error || 'Não foi possível buscar o vídeo.');
+        error.detail = data.detail;
+        throw error;
+      }
+      infoMemory.set(url, data);
+      if (infoMemory.size > INFO_MEMORY_MAX) {
+        infoMemory.delete(infoMemory.keys().next().value);
+      }
     }
 
     renderResult({ ...data, url });
