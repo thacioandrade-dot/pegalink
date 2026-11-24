@@ -1,18 +1,17 @@
 # Checklist de lançamento — PegaLink
 
-**Status atual:** projeto pronto para testes em `https://pegalink.onrender.com`, mas **NÃO lançado** com domínio próprio.
+**Status atual (24/11/2026):** site publicado em `https://pegalink.onrender.com` **sem Adsterra**, com domínio próprio ainda pendente. Propriedade do Google Search Console verificada e sitemap enviado e processado (25 URLs).
 
-## Regras até o lançamento
+## Regras até o lançamento com domínio próprio
 
-- Não fazer `git push` para `main`: o Render tem auto-deploy e publicaria o site.
-- Não verificar a propriedade no Google Search Console.
-- Não enviar sitemap ao Google.
 - Não colar anúncios da Adsterra no site.
-- Não divulgar o link de teste.
+- Não divulgar o link de teste como endereço final.
+- Ao fazer `git push origin main`, conferir se o Render iniciou o deploy: o auto-deploy não disparou no push de `03038c0`, foi necessário deploy manual pelo dashboard.
 
-Os commits locais `34f06f8`, `7ed7c5a` e `49299ac` ainda não foram enviados ao GitHub.
+Todos os commits até `03038c0` foram enviados ao GitHub e estão no ar.
 
 Validação local (Lighthouse em `http://localhost:3100/`): SEO 100, Acessibilidade 100, Boas Práticas 100, sem falhas.
+Validação no ar após deploy manual: `/mapa-do-site` com `ItemList`, sitemap com 25 URLs e arquivo de verificação do Google OK.
 
 ## 1. Domínio
 
@@ -41,9 +40,11 @@ Aprovação não significa ativar anúncios automaticamente: o código de anúnc
 
 ## 3. Google Search Console
 
-Propriedade `https://pegalink.onrender.com/` foi criada, mas **ainda não verificada**.
+Propriedade `https://pegalink.onrender.com/` **verificada** em 24/11/2026 pelo arquivo HTML `public/google1b603134014a71d3.html` (não remover).
 
-Arquivo de verificação já preparado: `public/google1b603134014a71d3.html`.
+Sitemap `https://pegalink.onrender.com/sitemap.xml` enviado e processado em 24/11/2026: **25 páginas encontradas**, incluindo `/mapa-do-site`.
+
+A solicitação manual de indexação (`Inspeção de URL` → `Solicitar indexação`) falhou por **cota diária excedida** para a homepage e o mapa do site. Tentar novamente no dia seguinte; o sitemap já submetido basta para o Google descobrir as páginas.
 
 Depois do domínio:
 
