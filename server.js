@@ -19,6 +19,7 @@ const {
   releaseDownloadSlot,
   MAX_CONCURRENT_DOWNLOADS
 } = require('./lib/downloader');
+const { createStream, primeInfo } = require('./lib/streamer');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -197,6 +198,9 @@ app.post('/api/info', rateLimit, async (req, res) => {
   }
 
   const info = await getVideoInfo(url, platform);
+  // Guarda os URLs originais para o download em streaming reaproveitar a busca
+  // que acabou de acontecer, sem precisar consultar o YouTube de novo.
+  primeInfo(url, platform, info);
   const data = summarizeInfo(info, platform);
 
   infoCache.set(key, { at: Date.now(), data });
@@ -209,6 +213,30 @@ app.post('/api/info', rateLimit, async (req, res) => {
   res.set('Cache-Control', 'private, max-age=60');
   res.json(data);
 });
+
+// Resolve quando o primeiro byte do arquivo chega. Se o ffmpeg falhar antes
+// disso, o servidor ainda pode cair para o caminho antigo sem ter enviado
+// nenhum cabeçalho ao navegador.
+function waitForFirstChunk(streamed) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const settle = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      streamed.stdout.removeListener('data', onData);
+      callback(value);
+    };
+    const onData = (chunk) => {
+      streamed.stdout.pause();
+      settle(resolve, chunk);
+    };
+    streamed.stdout.on('data', onData);
+    streamed.done.then(
+      () => settle(reject, new Error('O arquivo terminou antes de começar a ser enviado.')),
+      (error) => settle(reject, error)
+    );
+  });
+}
 
 app.post('/api/download', rateLimit, async (req, res) => {
   const body = req.body || {};
@@ -229,10 +257,17 @@ app.post('/api/download', rateLimit, async (req, res) => {
 
   const controller = new AbortController();
   let result = null;
+  let streamed = null;
 
   const cleanup = () => {
-    if (result) result.cleanup().catch(() => {});
-    result = null;
+    if (streamed) {
+      streamed.cleanup();
+      streamed = null;
+    }
+    if (result) {
+      result.cleanup().catch(() => {});
+      result = null;
+    }
   };
 
   res.on('close', () => {
@@ -240,44 +275,77 @@ app.post('/api/download', rateLimit, async (req, res) => {
     cleanup();
   });
 
+  const baseName = sanitizeFilename(body.name, `${platform}_video`);
+  const fileName = `${baseName}.${option.ext}`;
+  const asciiName = fileName.replace(/[^\x20-\x7E]/g, '_');
+  const disposition =
+    `attachment; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+
   try {
-    result = await startDownload({
-      url,
-      platform,
-      option,
-      signal: controller.signal
-    });
+    try {
+      streamed = await createStream({
+        url,
+        platform,
+        optionId: option.id,
+        signal: controller.signal
+      });
+      const firstChunk = await waitForFirstChunk(streamed);
 
-    if (res.destroyed || res.writableEnded) {
+      if (res.destroyed || res.writableEnded) return;
+
+      res.set('Content-Type', streamed.contentType);
+      res.set('Content-Disposition', disposition);
+      res.set('Cache-Control', 'no-store');
+      res.set('X-Content-Type-Options', 'nosniff');
+      res.set('X-Transfer', 'stream');
+
+      res.write(firstChunk);
+      streamed.stdout.pipe(res);
+      await streamed.done;
+      if (!res.writableEnded) res.end();
       cleanup();
-      return;
+    } catch (streamError) {
+      cleanup();
+      if (res.headersSent) {
+        res.destroy();
+        throw streamError;
+      }
+
+      // Caminho antigo como rede de segurança: baixa em arquivo temporário e
+      // tenta todos os fallbacks de formato antes de desistir.
+      result = await startDownload({
+        url,
+        platform,
+        option,
+        signal: controller.signal
+      });
+
+      if (res.destroyed || res.writableEnded) return;
+
+      res.set('Content-Type', result.mimeType);
+      res.set('Content-Length', String(result.size));
+      res.set('Content-Disposition', disposition);
+      res.set('Cache-Control', 'no-store');
+      res.set('X-Content-Type-Options', 'nosniff');
+      res.set('X-Transfer', 'buffered');
+
+      const stream = fs.createReadStream(result.filePath);
+      stream.on('error', () => {
+        if (!res.headersSent) res.status(500).json({ error: 'Falha ao enviar o arquivo.' });
+        else res.destroy();
+        cleanup();
+      });
+      stream.on('end', cleanup);
+      stream.pipe(res);
+      await new Promise((resolve, reject) => {
+        stream.on('end', resolve);
+        stream.on('error', reject);
+      });
     }
-
-    const baseName = sanitizeFilename(body.name, `${platform}_video`);
-    const fileName = `${baseName}.${option.ext}`;
-    const asciiName = fileName.replace(/[^\x20-\x7E]/g, '_');
-
-    res.set('Content-Type', result.mimeType);
-    res.set('Content-Length', String(result.size));
-    res.set(
-      'Content-Disposition',
-      `attachment; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`
-    );
-    res.set('Cache-Control', 'no-store');
-    res.set('X-Content-Type-Options', 'nosniff');
-
-    const stream = fs.createReadStream(result.filePath);
-    stream.on('error', () => {
-      if (!res.headersSent) res.status(500).json({ error: 'Falha ao enviar o arquivo.' });
-      else res.destroy();
-      cleanup();
-    });
-    stream.on('end', cleanup);
-    stream.pipe(res);
   } catch (error) {
     cleanup();
     if (!res.headersSent) {
-      res.status(error.status || 500).json({
+      res.status(error.status || 502).json({
         error: error.message || 'Erro interno no servidor.',
         detail: error.detail || undefined
       });
