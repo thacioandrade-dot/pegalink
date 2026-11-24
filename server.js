@@ -27,6 +27,13 @@ const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 25;
 const hits = new Map();
 
+// Evita consultar o yt-dlp de novo quando a mesma pessoa cola o mesmo link.
+// 10 minutos é tempo suficiente para acelerar a navegação sem deixar a lista
+// de formatos desatualizada por muito tempo.
+const INFO_CACHE_TTL = 10 * 60 * 1000;
+const INFO_CACHE_MAX = 200;
+const infoCache = new Map();
+
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.set('X-Content-Type-Options', 'nosniff');
@@ -177,10 +184,27 @@ app.get('/', (req, res) => {
 
 app.post('/api/info', rateLimit, async (req, res) => {
   const { url, platform } = validateVideoUrl(req.body?.url);
-  const info = await getVideoInfo(url, platform);
+  const key = `${platform}:${url}`;
+  const cached = infoCache.get(key);
 
-  res.set('Cache-Control', 'no-store');
-  res.json(summarizeInfo(info, platform));
+  if (cached && Date.now() - cached.at < INFO_CACHE_TTL) {
+    res.set('X-Cache', 'HIT');
+    res.set('Cache-Control', 'private, max-age=60');
+    return res.json(cached.data);
+  }
+
+  const info = await getVideoInfo(url, platform);
+  const data = summarizeInfo(info, platform);
+
+  infoCache.set(key, { at: Date.now(), data });
+  if (infoCache.size > INFO_CACHE_MAX) {
+    const oldestKey = infoCache.keys().next().value;
+    infoCache.delete(oldestKey);
+  }
+
+  res.set('X-Cache', 'MISS');
+  res.set('Cache-Control', 'private, max-age=60');
+  res.json(data);
 });
 
 app.post('/api/download', rateLimit, async (req, res) => {
