@@ -217,10 +217,6 @@ function renderResult(video) {
 
   panel.hidden = true;
   resultSection.hidden = false;
-
-  if (window.PEGAVIDEO_ADS && typeof window.PEGAVIDEO_ADS.refresh === 'function') {
-    window.PEGAVIDEO_ADS.refresh();
-  }
 }
 
 function resetResult() {
