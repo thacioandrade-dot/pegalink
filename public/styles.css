@@ -261,10 +261,29 @@ h1 { font-size: clamp(2.3rem, 6vw, 4.1rem); margin: 24px 0 18px; font-weight: 80
   font-size: 0.78rem;
   background: rgba(255, 255, 255, 0.02);
 }
+.ad-slot[hidden] { display: none; }
+.ad-slot[data-ad-filled="true"] {
+  min-height: 0;
+  border-color: transparent;
+  background: transparent;
+}
 .ad-slot ins { display: block; min-height: 90px; }
-.ad-leaderboard { max-width: 760px; margin-inline: auto; }
+.ad-slot iframe { display: block; max-width: 100%; }
+.ad-leaderboard { max-width: 760px; margin: 0 auto 8px; }
 .ad-result { margin: 20px 0 0; }
 .ad-footer { max-width: 1120px; margin-inline: auto; }
+.ad-sidebar {
+  position: fixed;
+  top: 50%;
+  right: 14px;
+  z-index: 5;
+  width: 160px;
+  margin: 0;
+  transform: translateY(-50%);
+}
+@media (max-width: 1400px) {
+  .ad-sidebar { display: none; }
+}
 
 .breadcrumb { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
 .breadcrumb a { color: var(--violet); }

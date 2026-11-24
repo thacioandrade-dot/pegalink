@@ -17,16 +17,53 @@
     document.head.appendChild(script);
   }
 
-  function renderSlot(container, name) {
-    if (container.dataset.adFilled === 'true') return;
+  // O HTML inserido com innerHTML não executa <script>. Recriamos cada tag
+  // para que o código do anúncio rode no ponto exato do container.
+  function activateScripts(container, done) {
+    const scripts = Array.from(container.querySelectorAll('script'));
+    let pending = scripts.filter((script) => script.src).length;
 
-    const custom = config.customHtml && config.customHtml[name];
-    if (custom) {
-      container.innerHTML = custom;
-      container.hidden = false;
-      container.dataset.adFilled = 'true';
+    if (!pending) {
+      scripts.forEach((old) => container.replaceChild(cloneScript(old), old));
+      done();
       return;
     }
+
+    scripts.forEach((old) => {
+      const fresh = cloneScript(old);
+      if (old.src) {
+        const settled = () => {
+          pending -= 1;
+          if (pending === 0) done();
+        };
+        fresh.addEventListener('load', settled, { once: true });
+        fresh.addEventListener('error', settled, { once: true });
+      }
+      old.replaceWith(fresh);
+    });
+  }
+
+  function cloneScript(old) {
+    const script = document.createElement('script');
+    Array.from(old.attributes).forEach((attr) => script.setAttribute(attr.name, attr.value));
+    script.textContent = old.textContent;
+    return script;
+  }
+
+  function renderCustom(container, html) {
+    return new Promise((resolve) => {
+      container.innerHTML = html;
+      container.hidden = false;
+      container.dataset.adFilled = 'true';
+      activateScripts(container, resolve);
+    });
+  }
+
+  function renderSlot(container, name) {
+    if (container.dataset.adFilled === 'true') return Promise.resolve();
+
+    const custom = config.customHtml && config.customHtml[name];
+    if (custom) return renderCustom(container, custom);
 
     const client = config.client;
     const slot = config.slots && config.slots[name];
@@ -36,7 +73,7 @@
         container.hidden = false;
         container.dataset.adFilled = 'true';
       }
-      return;
+      return Promise.resolve();
     }
 
     loadAdsense(client);
@@ -58,12 +95,18 @@
     } catch (error) {
       console.warn('Não foi possível iniciar o anúncio:', error);
     }
+    return Promise.resolve();
   }
 
   function refresh() {
     if (!config.enabled) return;
+
+    // Um bloco por vez: o script da Adsterra usa a variável global atOptions.
+    let chain = Promise.resolve();
     document.querySelectorAll('[data-ad-slot]').forEach((container) => {
-      renderSlot(container, container.dataset.adSlot);
+      chain = chain
+        .then(() => renderSlot(container, container.dataset.adSlot))
+        .catch(() => {});
     });
   }
 

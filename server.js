@@ -38,8 +38,9 @@ app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.set('X-Content-Type-Options', 'nosniff');
   res.set('X-Frame-Options', 'SAMEORIGIN');
-  // Não há links externos na interface: não exportar nada sobre quem está usando.
-  res.set('Referrer-Policy', 'no-referrer');
+  // Envia apenas a origem (pegalink.xyz) aos anúncios: nunca a URL completa
+  // nem qualquer dado da conta do proprietário.
+  res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
   res.set('Cross-Origin-Opener-Policy', 'same-origin');
   const protocol = String(req.get('x-forwarded-proto') || req.protocol || '')

@@ -8,7 +8,7 @@ Projeto independente: não usa o nome, o logo nem os textos do site de referênc
 
 - **URL pública:** https://pegalink.xyz
 - **Hospedagem:** Render (plano Free), atrás do Cloudflare
-- **Privacidade:** WHOIS do domínio privado, origem escondida pelo proxy da Cloudflare, sem anúncios, sem rastreadores e sem cadastro
+- **Privacidade:** WHOIS do domínio privado, origem escondida pelo proxy da Cloudflare, sem cadastro e sem histórico salvo no servidor. O serviço é financiado por anúncios de terceiros; o site envia apenas a origem da página como referrer.
 
 > O endereço `onrender.com` é apenas o destino interno do DNS; o link público é `pegalink.xyz`.
 
@@ -87,16 +87,17 @@ O terminal mostra uma URL `https://algo.trycloudflare.com`. Ela só funciona enq
 
 ## Anúncios
 
-Os espaços já estão no HTML (`top`, `result` e `footer`), mas **nenhum script é carregado** até você configurar.
+Os espaços estão no HTML (`leaderboard`, `result` e `sidebar`) e são preenchidos por `public/ads.js`.
 
-Para ativar:
+A configuração ativa fica em `public/ads-config.js`:
 
-1. Abra `public/ads-config.js`.
-2. Mude `enabled` para `true`.
-3. Preencha `client` com seu ID do AdSense (`ca-pub-...`) e os três slots.
-4. Se usar outra rede, preencha `customHtml` no lugar dos slots.
+- `enabled: true` liga os anúncios; `false` desliga sem precisar mexer no HTML.
+- `customHtml` guarda apenas o código público de cada bloco (chave, formato e largura/altura).
+- `showPlaceholder` controla se um espaço vazio aparece quando não há anúncio configurado.
 
-Redes de anúncios costumam exigir site publicado, conteúdo original e tráfego. Sites de download podem ser rejeitados por política de direitos autorais — verifique os termos da rede antes de solicitar.
+Os scripts são inseridos um por um porque a rede usa uma variável global (`atOptions`) para escolher o banner. Não há dados de conta nem informações pessoais nesses arquivos.
+
+Para trocar de rede, substitua o `customHtml` ou preencha `client`/`slots` com os dados da nova rede. Sites de download podem ser rejeitados por política de direitos autorais — verifique os termos da rede antes de solicitar.
 
 ## Aviso
 
