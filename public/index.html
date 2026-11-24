@@ -6,20 +6,31 @@
   <meta name="theme-color" content="#0b1020">
   <title>PegaLink — baixe vídeos de YouTube, TikTok e Instagram pelo link</title>
   <meta name="description" content="Baixe vídeos do YouTube, TikTok e Instagram pelo link, em MP4 ou MP3. Gratuito, rápido e sem instalar nada.">
-  <meta name="keywords" content="baixar vídeo, download youtube, download tiktok, download instagram, mp3, mp4, baixar vídeo pelo link">
+  <meta name="keywords" content="baixar vídeo, download youtube, download tiktok, download instagram, mp3, mp4, baixar vídeo pelo link, baixar youtube mp3, baixar reels, baixar shorts, salvar vídeo, downloader de vídeo, converter vídeo para mp3, baixar vídeo grátis">
   <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="googlebot" content="index, follow">
+  <meta name="author" content="PegaLink">
   <meta name="language" content="pt-BR">
+  <meta http-equiv="content-language" content="pt-BR">
   <link rel="canonical" id="canonical-link" href="http://localhost:3000/">
+  <link rel="alternate" id="hreflang-pt" hreflang="pt-BR" href="http://localhost:3000/">
+  <link rel="alternate" id="hreflang-x" hreflang="x-default" href="http://localhost:3000/">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PegaLink">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:title" content="PegaLink — baixe vídeos pelo link">
   <meta property="og:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, rápido e sem cadastro.">
   <meta property="og:url" id="og-url" content="http://localhost:3000/">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" id="og-image" content="http://localhost:3000/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="PegaLink — download de vídeos pelo link">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="PegaLink — baixe vídeos pelo link">
   <meta name="twitter:description" content="YouTube, TikTok e Instagram em MP4 ou MP3. Grátis, rápido e sem cadastro.">
+  <meta name="twitter:image" id="twitter-image" content="http://localhost:3000/og-image.png">
 
   <link rel="stylesheet" href="styles.css">
   <script type="application/ld+json">
@@ -33,11 +44,33 @@
         "inLanguage": "pt-BR"
       },
       {
+        "@type": "WebPage",
+        "url": "http://localhost:3000/",
+        "name": "PegaLink — baixe vídeos de YouTube, TikTok e Instagram pelo link",
+        "description": "Baixe vídeos do YouTube, TikTok e Instagram pelo link, em MP4 ou MP3. Gratuito, rápido e sem instalar nada.",
+        "inLanguage": "pt-BR"
+      },
+      {
         "@type": "SoftwareApplication",
         "name": "PegaLink",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Windows, macOS, Linux, iOS, Android",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+      },
+      {
+        "@type": "HowTo",
+        "name": "Como baixar vídeos pelo link com o PegaLink",
+        "step": [
+          { "@type": "HowToStep", "position": 1, "name": "Copie o link", "text": "No app da plataforma, toque em Compartilhar e escolha Copiar link." },
+          { "@type": "HowToStep", "position": 2, "name": "Cole no PegaLink", "text": "Cole a URL no campo e clique em Buscar vídeo." },
+          { "@type": "HowToStep", "position": 3, "name": "Escolha e baixe", "text": "Selecione MP4 ou MP3 e salve o arquivo no seu dispositivo." }
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Início", "item": "http://localhost:3000/" }
+        ]
       },
       {
         "@type": "FAQPage",
@@ -65,6 +98,7 @@
     <nav class="header-nav" aria-label="Navegação principal">
       <a href="#recursos">Recursos</a>
       <a href="#como-funciona">Como funciona</a>
+      <a href="#guias">Guias</a>
       <a href="#faq">FAQ</a>
     </nav>
   </header>
@@ -202,6 +236,25 @@
       </div>
     </section>
 
+    <section id="guias" class="section section-alt">
+      <div class="section-head">
+        <span class="section-kicker">Guias e buscas populares</span>
+        <h2>Tudo que você quer salvar, em um só lugar.</h2>
+      </div>
+      <div class="feature-grid">
+        <a class="feature-card" href="/youtube"><h3>YouTube</h3><p>Baixe vídeos do YouTube pelo link em MP4 ou MP3.</p></a>
+        <a class="feature-card" href="/tiktok"><h3>TikTok</h3><p>Salve vídeos do TikTok direto pelo navegador.</p></a>
+        <a class="feature-card" href="/instagram"><h3>Instagram</h3><p>Guarde posts e Reels públicos do Instagram.</p></a>
+        <a class="feature-card" href="/youtube-mp3"><h3>YouTube para MP3</h3><p>Extraia só o áudio dos seus vídeos favoritos.</p></a>
+        <a class="feature-card" href="/shorts"><h3>YouTube Shorts</h3><p>Baixe vídeos curtos pelo link de compartilhamento.</p></a>
+        <a class="feature-card" href="/reels"><h3>Reels</h3><p>Salve Reels do Instagram em vídeo ou áudio.</p></a>
+        <a class="feature-card" href="/mp4"><h3>MP4</h3><p>Escolha a melhor resolução disponível para baixar.</p></a>
+        <a class="feature-card" href="/mp3"><h3>MP3</h3><p>Converta vídeos em arquivo de áudio.</p></a>
+        <a class="feature-card" href="/como-baixar-video"><h3>Guia completo</h3><p>Veja o passo a passo para baixar qualquer vídeo.</p></a>
+        <a class="feature-card" href="/video-gratis"><h3>Download grátis</h3><p>Sem cadastro, sem assinatura e sem instalação.</p></a>
+      </div>
+    </section>
+
     <section id="faq" class="section">
       <div class="section-head">
         <span class="section-kicker">Perguntas frequentes</span>
@@ -222,6 +275,19 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <span class="footer-brand">Pega<span>Link</span></span>
+      <nav class="footer-links" aria-label="Links de SEO">
+        <a href="/youtube">Baixar do YouTube</a>
+        <a href="/tiktok">Baixar do TikTok</a>
+        <a href="/instagram">Baixar do Instagram</a>
+        <a href="/mp3">MP3</a>
+        <a href="/mp4">MP4</a>
+        <a href="/youtube-mp3">YouTube MP3</a>
+        <a href="/shorts">Shorts</a>
+        <a href="/reels">Reels</a>
+        <a href="/como-baixar-video">Como baixar vídeo</a>
+        <a href="/video-gratis">Vídeos grátis</a>
+        <a href="/sitemap.xml">Mapa do site</a>
+      </nav>
       <p>Use apenas para conteúdo próprio ou autorizado. Respeite direitos autorais e os termos das plataformas.</p>
       <span class="footer-note">Projeto independente · Não afiliado a YouTube, TikTok ou Instagram.</span>
     </div>

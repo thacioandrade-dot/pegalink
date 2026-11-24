@@ -1,11 +1,30 @@
 'use strict';
 
 (function setSeoUrls() {
-  const url = window.location.origin + window.location.pathname;
+  const origin = window.location.origin;
+  const url = origin + window.location.pathname;
+  const image = origin + '/og-image.png';
   const canonical = document.getElementById('canonical-link');
   const ogUrl = document.getElementById('og-url');
+  const ogImage = document.getElementById('og-image');
+  const twitterImage = document.getElementById('twitter-image');
   if (canonical) canonical.href = url;
   if (ogUrl) ogUrl.content = url;
+  if (ogImage) ogImage.content = image;
+  if (twitterImage) twitterImage.content = image;
+  for (const id of ['hreflang-pt', 'hreflang-x']) {
+    const alternate = document.getElementById(id);
+    if (alternate) alternate.href = url;
+  }
+  const structuredData = document.querySelector('script[type="application/ld+json"]');
+  if (structuredData) {
+    try {
+      const data = structuredData.textContent.replace(/http:\/\/localhost:3000/g, origin);
+      structuredData.textContent = data;
+    } catch (_) {
+      // Mantém os dados estáticos se não for possível atualizar.
+    }
+  }
 })();
 
 const form = document.getElementById('url-form');

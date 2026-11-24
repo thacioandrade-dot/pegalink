@@ -10,6 +10,7 @@ const {
   sanitizeFilename
 } = require('./lib/validate');
 const { summarizeInfo, resolveOption } = require('./lib/formats');
+const { getPages, findPage, renderPage, escapeHtml } = require('./lib/seo');
 const {
   getVideoInfo,
   startDownload,
@@ -27,6 +28,13 @@ const RATE_LIMIT = 25;
 const hits = new Map();
 
 app.disable('x-powered-by');
+app.use((_req, res, next) => {
+  res.set('X-Content-Type-Options', 'nosniff');
+  res.set('X-Frame-Options', 'SAMEORIGIN');
+  res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 app.use(express.json({ limit: '16kb' }));
 
 function rateLimit(req, res, next) {
@@ -72,21 +80,43 @@ function siteBase(req) {
 }
 
 app.get('/robots.txt', (req, res) => {
+  const base = siteBase(req);
   res.type('text/plain');
-  res.send(`User-agent: *\nAllow: /\nSitemap: ${siteBase(req)}/sitemap.xml\n`);
+  res.send(
+    'User-agent: *\n' +
+    'Allow: /\n' +
+    'Disallow: /api/\n' +
+    '\n' +
+    `Sitemap: ${base}/sitemap.xml\n`
+  );
 });
 
 app.get('/sitemap.xml', (req, res) => {
+  const base = siteBase(req);
   const now = new Date().toISOString();
+  const entries = [
+    `<url><loc>${escapeHtml(base)}/</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+    ...getPages().map((page, index) => {
+      const priority = index < 3 ? '0.9' : '0.8';
+      return `<url><loc>${escapeHtml(base)}/${page.slug}</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+    })
+  ].join('');
+
   res.type('application/xml');
   res.send(
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
-    `<url><loc>${siteBase(req)}/</loc><lastmod>${now}</lastmod>` +
-    '<changefreq>weekly</changefreq><priority>1.0</priority></url>' +
+    entries +
     '</urlset>'
   );
 });
+
+for (const page of getPages()) {
+  app.get(`/${page.slug}`, (req, res) => {
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.send(renderPage(page, siteBase(req)));
+  });
+}
 
 app.post('/api/info', rateLimit, async (req, res) => {
   const { url, platform } = validateVideoUrl(req.body?.url);
