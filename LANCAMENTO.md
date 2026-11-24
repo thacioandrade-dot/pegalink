@@ -16,13 +16,15 @@ Validação local (Lighthouse em `http://localhost:3100/`): SEO 100, Acessibilid
 
 ## 1. Domínio
 
-Domínio escolhido: **.xyz** (ex.: `pegalink.xyz`).
+Domínio escolhido: **.xyz**, registrador **Spaceship** (cupom `XYZ52`), com renovação de US$ 13,97/ano.
+
+Nome esperado: `pegalink.xyz`.
 
 Opções pesquisadas em 23/11/2026:
 
 | Registrador | 1º ano | Renovação | Observação |
 |---|---:|---:|---|
-| Spaceship | US$ 0,95 com cupom `XYZ52` | US$ 13,97/ano | Menor primeiro ano |
+| Spaceship | US$ 0,95 com cupom `XYZ52` | US$ 13,97/ano | **Escolhido — menor primeiro ano** |
 | Porkbun | US$ 1,29 | US$ 14,21/ano | WHOIS privado gratuito |
 | PublicDomainRegistry | US$ 8,00 | US$ 8,00/ano | Melhor custo fixo a longo prazo |
 | Cloudflare | US$ 13,50 | US$ 13,50/ano | Exige usar DNS da Cloudflare |
