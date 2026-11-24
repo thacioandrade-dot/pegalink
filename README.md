@@ -33,7 +33,7 @@ Para conferir se todas as plataformas continuam oferecendo melhor qualidade, qua
 
 Opções de download:
 
-- **YouTube e Instagram:** “Melhor qualidade” (vídeo + áudio no teto real), “Download rápido” (MP4 progressivo, sem conversão), resoluções reais quando existem (4K/2K/1080p/720p/480p/360p), “Qualidade leve” e MP3.
+- **YouTube e Instagram:** exatamente **Melhor qualidade** (vídeo + áudio no teto real, sem fallback para versão menor), **HD 720p**, **SD 360p** e **Áudio MP3**. As opções antigas (rápido, 1080p, 480p, leve) foram removidas por pedido do proprietário.
 - **TikTok:** exatamente três botões — **Full HD 1080p** (sempre o melhor arquivo original, sem recompressão), **HD 720p** (versão de alta qualidade porém comprimida, arquivo menor real da plataforma) e **Áudio MP3** (presente em todas as redes). Espelhos CDN (`-0`, `-1`) não viram botões diferentes e os fallbacks nunca caem para `best` genérico.
 
 ## Como funciona
