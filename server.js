@@ -53,10 +53,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Páginas públicas podem ficar em cache na CDN (Cloudflare) sem alterar o HTML:
-// o navegador renova em 1h e a borda renova em 24h, reduzindo o despertar do Render.
+// Páginas públicas ficam em cache na CDN (Cloudflare), mas o navegador sempre
+// revalida o HTML. Isso evita que uma mudança no layout (por exemplo, um novo
+// bloco de anúncio) demore uma hora para aparecer em quem já visitou o site.
 function setPublicCache(res) {
-  res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400');
+  res.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400');
   res.set('CDN-Cache-Control', 'public, max-age=86400');
 }
 app.use(express.json({ limit: '16kb' }));
