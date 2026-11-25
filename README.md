@@ -33,7 +33,7 @@ Para conferir se todas as plataformas continuam oferecendo melhor qualidade, qua
 
 Opções de download:
 
-- **YouTube e Instagram:** **Melhor qualidade** (vídeo + áudio no teto real, sem fallback para versão menor), **Download rápido** (MP4 progressivo, começa a chegar antes), **HD 720p**, **SD 360p** e **Áudio MP3**.
+- **YouTube e Instagram:** exatamente quatro botões — **Melhor qualidade** (vídeo + áudio no teto real, superior, sem fallback para versão menor), **HD 720p**, **SD 480p** e **Áudio MP3**. O antigo “Download rápido” foi removido da interface; o ID `fast` continua aceito na API apenas para páginas em cache.
 - **Velocidade:** o download é enviado em streaming — o yt-dlp busca o vídeo e escreve na saída padrão, o ffmpeg remuxa para MP4 fragmentado (ou converte para MP3) e o navegador recebe os primeiros bytes segundos após o clique, sem esperar o arquivo inteiro terminar no servidor. Se o streaming falhar antes de qualquer byte, o servidor cai automaticamente para o método antigo com todos os fallbacks de formato.
 - **TikTok:** exatamente três botões — **Full HD 1080p** (sempre o melhor arquivo original, sem recompressão), **HD 720p** (versão de alta qualidade porém comprimida, arquivo menor real da plataforma) e **Áudio MP3** (presente em todas as redes). Espelhos CDN (`-0`, `-1`) não viram botões diferentes e os fallbacks nunca caem para `best` genérico.
 
