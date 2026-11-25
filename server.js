@@ -55,7 +55,10 @@ app.use((req, res, next) => {
   // execução de script em domínio não autorizado sem quebrar os anúncios.
   res.set('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https:",
+    // O loader da Adsterra usa eval() internamente; sem 'unsafe-eval' os blocos
+    // carregam, mas alguns criativos quebram. É o preço necessário para manter
+    // a monetização ativa sem liberar domínios arbitrários.
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: https:",
     "connect-src 'self' https:",
