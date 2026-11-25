@@ -121,6 +121,21 @@ function siteBase(_req) {
   return SITE_BASE;
 }
 
+// Arquivo de descoberta para assistentes de IA e buscadores que leem texto
+// simples. É público, gratuito e não contém nenhum dado do proprietário.
+app.get('/llms.txt', (req, res) => {
+  const base = siteBase(req);
+  setPublicCache(res);
+  res.type('text/plain');
+  res.send(
+    '# PegaLink\n\n' +
+    '> Ferramenta online e gratuita para salvar vídeos públicos de YouTube, TikTok e Instagram pelo link, em MP4 ou MP3. Sem cadastro e sem aplicativo.\n\n' +
+    '## Guias\n\n' +
+    getPages().map((page) => `- [${page.title}](${base}/${page.slug}): ${page.description}`).join('\n') +
+    '\n'
+  );
+});
+
 app.get('/robots.txt', (req, res) => {
   const base = siteBase(req);
   setPublicCache(res);

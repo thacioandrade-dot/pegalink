@@ -88,8 +88,14 @@ O terminal mostra uma URL `https://algo.trycloudflare.com`. Ela só funciona enq
 ## SEO
 
 - Meta tags, Open Graph, Twitter Card e JSON-LD (WebSite + SoftwareApplication + FAQPage) em `public/index.html`.
-- `robots.txt` e `sitemap.xml` gerados dinamicamente pelo servidor, usando o host da requisição (funciona atrás do túnel).
+- `robots.txt`, `sitemap.xml` e `llms.txt` gerados dinamicamente pelo servidor com a base canônica fixa em `https://pegalink.xyz` (defina `SITE_BASE` para testar em túnel).
+- 24 guias com conteúdo, passos e FAQ próprios, mais seções exclusivas em `lib/seo-extra.js`.
+- Submissão gratuita ao IndexNow: `npm run seo:indexnow` (a chave pública fica em `public/`).
 - `public/favicon.svg`.
+
+## Guias publicados
+
+[YouTube](https://pegalink.xyz/youtube) · [TikTok](https://pegalink.xyz/tiktok) · [Instagram](https://pegalink.xyz/instagram) · [MP3](https://pegalink.xyz/mp3) · [Shorts](https://pegalink.xyz/shorts) · [Reels](https://pegalink.xyz/reels) · [Mapa do site](https://pegalink.xyz/mapa-do-site)
 
 ## Anúncios
 
