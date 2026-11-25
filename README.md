@@ -52,6 +52,13 @@ Endpoints:
 - `POST /api/info` — recebe `{ url }` e devolve título, miniatura, duração e formatos
 - `POST /api/download` — recebe `{ url, quality, name }` e transmite o arquivo em stream
 
+## Segurança
+
+- Nenhum cadastro, e-mail ou histórico salvo; WHOIS privado e origem protegida pela Cloudflare.
+- Apenas URLs http(s) de YouTube, TikTok e Instagram, sem usuário/senha ou porta customizada.
+- TLS validado nas consultas ao extrator; rate limit por IP real da Cloudflare; limites de corpo e concorrência; CSP, HSTS e headers de defesa.
+- Erros não devolvem detalhes internos, e os binários baixados no build são conferidos por SHA256. O container roda como usuário não-root.
+
 ## Limitações reais
 
 - Funciona melhor com **vídeos públicos**. Vídeos privados, apagados, com restrição de idade ou que exigem login podem falhar.

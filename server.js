@@ -9,9 +9,11 @@ const {
   validateVideoUrl,
   sanitizeFilename
 } = require('./lib/validate');
-const { summarizeInfo, resolveOption } = require('./lib/formats');
+const { FIXED_SELECTORS, summarizeInfo, resolveOption } = require('./lib/formats');
 const { getPages, findPage, renderPage, escapeHtml, SITE_LAST_MODIFIED } = require('./lib/seo');
 const {
+  DownloadError,
+  friendlyError,
   getVideoInfo,
   startDownload,
   canStartDownload,
@@ -22,6 +24,11 @@ const {
 const { createStream } = require('./lib/streamer');
 
 const app = express();
+// Atrás da Cloudflare, todo mundo chega pelo mesmo IP de proxy. Sem isso, um
+// visitante ocuparia o limite de todos os outros (ou um ataque derrubaria o
+// serviço para todo mundo). A Cloudflare sobrescreve CF-Connecting-IP, então
+// esse cabeçalho não pode ser forjado por quem passa por ela.
+app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT) || 3000;
 
 const RATE_WINDOW_MS = 60_000;
@@ -44,6 +51,22 @@ app.use((req, res, next) => {
   res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
   res.set('Cross-Origin-Opener-Policy', 'same-origin');
+  // Adsterra usa scriptremoto e iframes próprios; allowlist explícita impede
+  // execução de script em domínio não autorizado sem quebrar os anúncios.
+  res.set('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https:",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "img-src 'self' data: https:",
+    "connect-src 'self' https:",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "frame-src 'self' https:",
+    "object-src 'none'",
+    "frame-ancestors 'self'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    'upgrade-insecure-requests'
+  ].join('; '));
   const protocol = String(req.get('x-forwarded-proto') || req.protocol || '')
     .split(',')[0]
     .trim();
@@ -78,11 +101,12 @@ app.use((req, res, next) => {
 });
 
 function rateLimit(req, res, next) {
-  const ip = req.ip || 'desconhecido';
+  const ip = req.get('cf-connecting-ip') || req.ip || 'desconhecido';
   const now = Date.now();
   const recent = (hits.get(ip) || []).filter((time) => now - time < RATE_WINDOW_MS);
 
   if (recent.length >= RATE_LIMIT) {
+    res.set('Retry-After', '60');
     return res.status(429).json({
       error: 'Muitas requisições. Aguarde um minuto e tente novamente.'
     });
@@ -272,6 +296,19 @@ app.post('/api/download', rateLimit, async (req, res) => {
     }
   }
 
+  // Só aceita IDs que vieram da própria lista de formatos ou os IDs fixos do
+  // seletor. Isso fecha qualquer tentativa de passar um valor estranho no
+  // campo "quality" — mesmo sem haver injeção de comando no spawn.
+  const knownId =
+    typeof requestedQuality === 'string' &&
+    !requestedQuality.startsWith('-') &&
+    (Object.prototype.hasOwnProperty.call(FIXED_SELECTORS, requestedQuality) ||
+      /^\d{3,4}p$/.test(requestedQuality) ||
+      (Array.isArray(freshFormats) && freshFormats.some((item) => item.id === requestedQuality)));
+  if (!knownId) {
+    throw new ValidationError('Escolha um formato de download válido.');
+  }
+
   let option = resolveOption(requestedQuality, platform);
   const freshOption =
     freshFormats && freshFormats.find((item) => item.id === requestedQuality);
@@ -379,11 +416,12 @@ app.post('/api/download', rateLimit, async (req, res) => {
     }
   } catch (error) {
     cleanup();
+    // O detalhe técnico fica só no log. A resposta pública traz apenas a
+    // mensagem amigável, sem URL de mídia, proxy ou caminho interno.
+    const publicError = error instanceof DownloadError ? error : friendlyError(error);
+    console.error('[download]', error);
     if (!res.headersSent) {
-      res.status(error.status || 502).json({
-        error: error.message || 'Erro interno no servidor.',
-        detail: error.detail || undefined
-      });
+      res.status(publicError.status || 502).json({ error: publicError.message });
     }
   } finally {
     releaseDownloadSlot();
@@ -392,6 +430,9 @@ app.post('/api/download', rateLimit, async (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public'), {
   index: 'index.html',
+  // Nunca servir arquivos "ponto" (.git, .env, .npmrc etc.), mesmo que algum
+  // deles apareça no public/ por engano em um deploy futuro.
+  dotfiles: 'deny',
   setHeaders(res, filePath) {
     // CSS, JS, SVG e imagens podem ficar na Cloudflare por 24h sem risco:
     // são arquivos públicos e imutáveis até o próximo deploy.
@@ -407,13 +448,20 @@ app.use((error, _req, res, _next) => {
     return res.status(400).json({ error: 'JSON inválido na requisição.' });
   }
 
-  if (!error.status || error.status >= 500) {
+  const status = error.status && error.status < 500 ? error.status : 500;
+
+  if (status === 500) {
+    // Loga o detalhe apenas no servidor. A resposta pública nunca revela
+    // mensagem de exceção, caminho de arquivo ou stack trace.
     console.error('[erro]', error);
   }
 
-  return res.status(error.status || 500).json({
-    error: error.message || 'Erro interno no servidor.',
-    detail: error.detail || undefined
+  // Nenhum detalhe técnico sai daqui: apenas mensagens de validação
+  // controladas pelo servidor. Erros internos são logados acima.
+  return res.status(status).json({
+    error: status === 500
+      ? 'Erro interno no servidor.'
+      : (error.message || 'Não foi possível concluir a solicitação.')
   });
 });
 
