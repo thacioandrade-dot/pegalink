@@ -10,7 +10,7 @@ const {
   sanitizeFilename
 } = require('./lib/validate');
 const { summarizeInfo, resolveOption } = require('./lib/formats');
-const { getPages, findPage, renderPage, escapeHtml } = require('./lib/seo');
+const { getPages, findPage, renderPage, escapeHtml, SITE_LAST_MODIFIED } = require('./lib/seo');
 const {
   getVideoInfo,
   startDownload,
@@ -112,12 +112,13 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-function siteBase(req) {
-  const protocol = String(req.get('x-forwarded-proto') || req.protocol || 'http')
-    .split(',')[0]
-    .trim();
-  const host = String(req.get('host') || 'localhost:3000').replace(/[^a-zA-Z0-9.\-:]/g, '');
-  return `${protocol}://${host}`;
+// Base canônica FIXA. Se a requisição chegar pelo hostname interno do Render
+// (pegalink.onrender.com), por "www" ou por um Host forjado, o Google continua
+// vendo apenas https://pegalink.xyz no canonical, no OG e no sitemap.
+const SITE_BASE = (process.env.SITE_BASE || 'https://pegalink.xyz').replace(/\/+$/, '');
+
+function siteBase(_req) {
+  return SITE_BASE;
 }
 
 app.get('/robots.txt', (req, res) => {
@@ -135,7 +136,7 @@ app.get('/robots.txt', (req, res) => {
 
 app.get('/sitemap.xml', (req, res) => {
   const base = siteBase(req);
-  const lastmod = '2026-11-24';
+  const lastmod = SITE_LAST_MODIFIED;
 
   function entry(pathname, priority, changefreq) {
     const loc = `${base}${pathname}`;
@@ -183,8 +184,19 @@ app.get('/', (req, res) => {
       return res.status(500).send('Não foi possível carregar a página inicial.');
     }
     setPublicCache(res);
-    res.type('html').send(html.split('http://localhost:3000').join(base));
+    res.type('html').send(
+      html
+        .split('http://localhost:3000').join(base)
+        .split('__SITE_LAST_MODIFIED__').join(SITE_LAST_MODIFIED)
+    );
   });
+});
+
+// /index.html era servido cru pelo express.static com "localhost" no
+// canonical e no JSON-LD — exatamente o HTML que o Google lê primeiro.
+// Uma única linha de redirect 301 elimina essa duplicata.
+app.get('/index.html', (req, res) => {
+  res.redirect(301, `${siteBase(req)}/`);
 });
 
 app.post('/api/info', rateLimit, async (req, res) => {
