@@ -216,23 +216,41 @@ app.post('/api/download', rateLimit, async (req, res) => {
   const body = req.body || {};
   const { url, platform } = validateVideoUrl(body.url);
 
-  // Páginas antigas em cache ainda enviam "best"/"fast". Em vez de aceitar o
-  // seletor genérico (que pode escolher um arquivo menor), buscamos o ID exato
-  // do maior arquivo disponível — o mesmo que o botão principal recebe hoje.
+  // Usamos a mesma lista de formatos do /api/info para o download. Assim o
+  // seletor exato não fica desatualizado entre a busca e o clique, e páginas
+  // antigas em cache que enviam "best"/"fast" recebem o ID do maior arquivo.
   let requestedQuality = body.quality;
-  if (requestedQuality === 'best' || requestedQuality === 'fast') {
+  const cacheKey = `${platform}:${url}`;
+  let freshFormats = null;
+  const cachedInfo = infoCache.get(cacheKey);
+  if (cachedInfo && Date.now() - cachedInfo.at < INFO_CACHE_TTL) {
+    freshFormats = cachedInfo.data.formats;
+  }
+  if (!freshFormats) {
     try {
       const info = await getVideoInfo(url, platform);
-      const top = summarizeInfo(info, platform).formats.find(
+      const data = summarizeInfo(info, platform);
+      infoCache.set(cacheKey, { at: Date.now(), data });
+      freshFormats = data.formats;
+    } catch {
+      /* mantém o ID recebido se a busca falhar */
+    }
+  }
+  if (freshFormats && Array.isArray(freshFormats)) {
+    if (requestedQuality === 'best' || requestedQuality === 'fast') {
+      const top = freshFormats.find(
         (item) => item.label === 'Melhor qualidade' && item.kind === 'video'
       );
       if (top && top.id) requestedQuality = top.id;
-    } catch {
-      /* mantém o seletor genérico se a busca falhar */
     }
   }
 
-  const option = resolveOption(requestedQuality, platform);
+  let option = resolveOption(requestedQuality, platform);
+  const freshOption =
+    freshFormats && freshFormats.find((item) => item.id === requestedQuality);
+  if (option && freshOption && freshOption.kind === option.kind) {
+    option = { ...freshOption, id: option.id };
+  }
   if (!option) {
     throw new ValidationError('Escolha um formato de download válido.');
   }
