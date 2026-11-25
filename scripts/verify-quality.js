@@ -154,6 +154,18 @@ assert.equal(resolveOption('orig-bytevc1_1080p_808907-0').selector, 'bytevc1_108
 assert.equal(resolveOption('fullhd-bytevc1_1080p_808907-0').selector, 'bytevc1_1080p_808907-0');
 assert.equal(resolveOption('vid-135').selector, '135+bestaudio');
 assert.equal(resolveOption('vida-135').selector, '135');
+assert.ok(
+  resolveOption('vid-136').fallbacks.some((item) => item.includes('[height<=720]')),
+  'fallback do botão 720p não pode subir para 1080p'
+);
+assert.ok(
+  !resolveOption('vid-136').fallbacks.some((item) => item === 'best' || item === 'bestaudio/best'),
+  'fallback do botão 720p não pode ser genérico'
+);
+assert.ok(
+  resolveOption('vid-135').fallbacks.some((item) => item.includes('[width<=480]')),
+  'fallback do botão 480p respeita retrato'
+);
 assert.equal(resolveOption('top-137').selector, '137+bestaudio');
 assert.equal(resolveOption('topa-137').selector, '137');
 assert.ok(resolveOption('fast').selector.startsWith('bestvideo+bestaudio'), 'ID antigo fast não pode baixar versão pequena');
