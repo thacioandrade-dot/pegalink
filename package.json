@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "seo:indexnow": "node scripts/indexnow.js",
     "update:yt": "node -e \"require('youtube-dl-exec').update().then(() => console.log('yt-dlp atualizado')).catch((e) => { console.error(e); process.exit(1) })\""
   },
   "engines": {
