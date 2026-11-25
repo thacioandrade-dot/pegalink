@@ -216,7 +216,23 @@ app.post('/api/download', rateLimit, async (req, res) => {
   const body = req.body || {};
   const { url, platform } = validateVideoUrl(body.url);
 
-  const option = resolveOption(body.quality, platform);
+  // Páginas antigas em cache ainda enviam "best"/"fast". Em vez de aceitar o
+  // seletor genérico (que pode escolher um arquivo menor), buscamos o ID exato
+  // do maior arquivo disponível — o mesmo que o botão principal recebe hoje.
+  let requestedQuality = body.quality;
+  if (requestedQuality === 'best' || requestedQuality === 'fast') {
+    try {
+      const info = await getVideoInfo(url, platform);
+      const top = summarizeInfo(info, platform).formats.find(
+        (item) => item.label === 'Melhor qualidade' && item.kind === 'video'
+      );
+      if (top && top.id) requestedQuality = top.id;
+    } catch {
+      /* mantém o seletor genérico se a busca falhar */
+    }
+  }
+
+  const option = resolveOption(requestedQuality, platform);
   if (!option) {
     throw new ValidationError('Escolha um formato de download válido.');
   }

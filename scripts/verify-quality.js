@@ -69,6 +69,20 @@ const instagram = {
   ]
 };
 
+// 720p com bitrate maior que o 1080p: o botão principal deve escolher pelo
+// tamanho real do arquivo, e o botão 720p deve ficar abaixo dele.
+const youtubeBitrateTrap = {
+  id: 'yt-size',
+  title: 'Teste bitrate',
+  duration: 100,
+  formats: [
+    { format_id: '137', vcodec: 'avc1', acodec: 'none', width: 1920, height: 1080, tbr: 1000 },
+    { format_id: '136', vcodec: 'avc1', acodec: 'none', width: 1280, height: 720, tbr: 5000 },
+    { format_id: '136-1', vcodec: 'avc1', acodec: 'none', width: 1280, height: 720, tbr: 3000 },
+    { format_id: '135', vcodec: 'avc1', acodec: 'none', width: 854, height: 480, tbr: 500 }
+  ]
+};
+
 function labels(options) {
   return options.map((option) => option.label);
 }
@@ -96,7 +110,8 @@ const yt = checkPlatform('youtube', youtubeHorizontal, [
 assert.deepEqual(labels(yt), ['Melhor qualidade', 'HD 720p', 'SD 480p', 'Áudio MP3'], 'YouTube deve ter exatamente 4 botões');
 assert.equal(yt[0].id, 'top-137', 'Melhor qualidade deve apontar para o maior formato real');
 assert.equal(yt[0].selector, '137+bestaudio', 'Melhor qualidade deve baixar o formato exato com áudio');
-assert.ok(yt[0].fallbacks.some((item) => item.startsWith('bestvideo+bestaudio')), 'Melhor qualidade mantém fallback no teto');
+assert.ok(yt[0].fallbacks.some((item) => item.includes('[height<=1080]')), 'Melhor qualidade mantém fallback no teto');
+assert.ok(!yt[0].fallbacks.includes('best'), 'Melhor qualidade não pode cair para progressivo menor');
 assert.ok(yt[0].detail.includes('superior'), 'Melhor qualidade deve ser descrita como superior');
 assert.equal(yt[1].id, 'vid-136', '720p deve apontar para o ID exato do formato');
 assert.equal(yt[1].selector, '136+bestaudio', '720p deve juntar o formato exato com o áudio');
@@ -143,11 +158,26 @@ assert.equal(ig[0].selector, 'video_1080p+bestaudio');
 assert.equal(ig[1].selector, 'video_720p+bestaudio');
 assert.equal(ig[2].selector, 'video_480p+bestaudio');
 
+const trap = checkPlatform('youtube-bitrate', youtubeBitrateTrap, [
+  'Melhor qualidade',
+  'HD 720p',
+  'SD 480p',
+  'Áudio MP3'
+]);
+assert.equal(trap[0].id, 'top-136', 'botão principal escolhe o maior arquivo, não a maior resolução comprimida');
+assert.equal(trap[0].selector, '136+bestaudio');
+assert.equal(trap[1].selector, '136-1+bestaudio', 'HD 720p fica abaixo do principal quando há dois 720p');
+assert.equal(trap[2].selector, '135+bestaudio');
+
 for (const id of ['best', 'fast', '1080p', '720p', '480p', '360p', 'light', 'audio', 'fmt-h264_720p_1', 'orig-bytevc1_1080p_808907-0', 'fullhd-bytevc1_1080p_808907-0', 'vid-135', 'vida-135', 'top-137', 'topa-137']) {
   assert.ok(resolveOption(id), `resolveOption(${id}) retornou nulo`);
 }
 assert.ok(resolveOption('1080p').selector.includes('[height<=1080]'));
 assert.ok(resolveOption('1080p').selector.includes('[width<=1080]'));
+assert.ok(
+  !resolveOption('720p').fallbacks.includes('best'),
+  'ID antigo 720p não pode cair para best e ultrapassar o botão principal'
+);
 assert.equal(resolveOption('fmt-h264_720p_1').selector, 'h264_720p_1');
 assert.deepEqual(resolveOption('fmt-h264_720p_1').fallbacks, [], 'formato exato não deve cair para best');
 assert.equal(resolveOption('orig-bytevc1_1080p_808907-0').selector, 'bytevc1_1080p_808907-0');
