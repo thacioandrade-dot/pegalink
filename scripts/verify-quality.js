@@ -94,7 +94,9 @@ const yt = checkPlatform('youtube', youtubeHorizontal, [
   'Áudio MP3'
 ]);
 assert.deepEqual(labels(yt), ['Melhor qualidade', 'HD 720p', 'SD 480p', 'Áudio MP3'], 'YouTube deve ter exatamente 4 botões');
-assert.ok(yt[0].selector.startsWith('bestvideo+bestaudio'), 'Melhor qualidade deve usar a maior resolução real');
+assert.equal(yt[0].id, 'top-137', 'Melhor qualidade deve apontar para o maior formato real');
+assert.equal(yt[0].selector, '137+bestaudio', 'Melhor qualidade deve baixar o formato exato com áudio');
+assert.ok(yt[0].fallbacks.some((item) => item.startsWith('bestvideo+bestaudio')), 'Melhor qualidade mantém fallback no teto');
 assert.ok(yt[0].detail.includes('superior'), 'Melhor qualidade deve ser descrita como superior');
 assert.equal(yt[1].id, 'vid-136', '720p deve apontar para o ID exato do formato');
 assert.equal(yt[1].selector, '136+bestaudio', '720p deve juntar o formato exato com o áudio');
@@ -110,6 +112,7 @@ const short = checkPlatform('youtube', youtubeShort, [
   'Áudio MP3'
 ]);
 assert.deepEqual(labels(short), ['Melhor qualidade', 'HD 720p', 'SD 480p', 'Áudio MP3'], 'Short mantém as mesmas opções');
+assert.equal(short[0].selector, '136+bestaudio', 'Short usa o maior formato vertical real, não um genérico menor');
 assert.equal(short[1].selector, '136+bestaudio', 'Short 720p usa o formato vertical exato');
 assert.equal(short[2].selector, '135+bestaudio', 'Short 480p usa o formato vertical exato, não 240p');
 
@@ -136,10 +139,11 @@ assert.equal(ttMirrors[1].id, 'fmt-h264_720p_504085-0');
 
 const ig = checkPlatform('instagram', instagram, ['Melhor qualidade', 'HD 720p', 'SD 480p', 'Áudio MP3']);
 assert.deepEqual(labels(ig), ['Melhor qualidade', 'HD 720p', 'SD 480p', 'Áudio MP3'], 'Instagram deve ter exatamente 4 botões');
+assert.equal(ig[0].selector, 'video_1080p+bestaudio');
 assert.equal(ig[1].selector, 'video_720p+bestaudio');
 assert.equal(ig[2].selector, 'video_480p+bestaudio');
 
-for (const id of ['best', 'fast', '1080p', '720p', '480p', '360p', 'light', 'audio', 'fmt-h264_720p_1', 'orig-bytevc1_1080p_808907-0', 'fullhd-bytevc1_1080p_808907-0', 'vid-135', 'vida-135']) {
+for (const id of ['best', 'fast', '1080p', '720p', '480p', '360p', 'light', 'audio', 'fmt-h264_720p_1', 'orig-bytevc1_1080p_808907-0', 'fullhd-bytevc1_1080p_808907-0', 'vid-135', 'vida-135', 'top-137', 'topa-137']) {
   assert.ok(resolveOption(id), `resolveOption(${id}) retornou nulo`);
 }
 assert.ok(resolveOption('1080p').selector.includes('[height<=1080]'));
@@ -150,6 +154,9 @@ assert.equal(resolveOption('orig-bytevc1_1080p_808907-0').selector, 'bytevc1_108
 assert.equal(resolveOption('fullhd-bytevc1_1080p_808907-0').selector, 'bytevc1_1080p_808907-0');
 assert.equal(resolveOption('vid-135').selector, '135+bestaudio');
 assert.equal(resolveOption('vida-135').selector, '135');
+assert.equal(resolveOption('top-137').selector, '137+bestaudio');
+assert.equal(resolveOption('topa-137').selector, '137');
+assert.ok(resolveOption('fast').selector.startsWith('bestvideo+bestaudio'), 'ID antigo fast não pode baixar versão pequena');
 assert.ok(resolveOption('best', 'tiktok').selector.includes('watermark'), 'resolveOption deve respeitar a plataforma');
 assert.deepEqual(resolveOption('best', 'tiktok').fallbacks, [], 'TikTok best não pode degradar para best genérico');
 assert.equal(resolveOption('best').fallbacks.includes('best'), false, 'YouTube/Instagram best não pode cair para best progressivo');
