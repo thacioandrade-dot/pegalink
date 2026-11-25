@@ -35,6 +35,16 @@ window.PEGAVIDEO_ADS = {
     'params' : {}
   };
 </script>
+<script data-cfasync="false" src="https://bellnewyork.org/22/96e3ee21c77b12e18744866759b6cab8"></script>`,
+    sidebarRight: `<script>
+  atOptions = {
+    'key' : '96e3ee21c77b12e18744866759b6cab8',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
 <script data-cfasync="false" src="https://bellnewyork.org/22/96e3ee21c77b12e18744866759b6cab8"></script>`
   }
 };

@@ -272,27 +272,28 @@ h1 { font-size: clamp(2.3rem, 6vw, 4.1rem); margin: 24px 0 18px; font-weight: 80
 .ad-leaderboard { max-width: 760px; margin: 0 auto 8px; }
 .ad-result { margin: 20px 0 0; }
 .ad-footer { max-width: 1120px; margin-inline: auto; }
-/* Anúncio vertical fixo no canto esquerdo. */
+/* Anúncios verticais fixos nos dois cantos. */
 .ad-sidebar {
   position: fixed;
   top: 50%;
-  left: 14px;
-  right: auto;
   z-index: 15;
   width: 160px;
   margin: 0;
   transform: translateY(-50%);
 }
-/* Em telas médias, abre uma faixa à esquerda para o anúncio não cobrir o texto. */
+.ad-sidebar-left { left: 14px; right: auto; }
+.ad-sidebar-right { left: auto; right: 14px; }
+/* Em telas médias, abre faixa dos dois lados para os anúncios não cobrirem o texto. */
 @media (min-width: 1100px) and (max-width: 1469px) {
-  body { padding-left: 184px; }
+  body { padding-left: 184px; padding-right: 184px; }
 }
-/* Em telas menores, o vertical vira um bloco central no lugar de desaparecer. */
+/* Em telas menores, os verticais viram blocos centrais no lugar de desaparecer. */
 @media (max-width: 1099px) {
   .ad-sidebar {
     position: static;
     top: auto;
     left: auto;
+    right: auto;
     margin: 24px auto;
     transform: none;
   }
