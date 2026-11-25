@@ -5,7 +5,6 @@
 
 const assert = require('node:assert/strict');
 const { buildFormatOptions, resolveOption } = require('../lib/formats');
-const { selectSources } = require('../lib/streamer');
 
 const youtubeHorizontal = {
   id: 'yt-h',
@@ -147,19 +146,5 @@ assert.ok(resolveOption('best', 'tiktok').selector.includes('watermark'), 'resol
 assert.deepEqual(resolveOption('best', 'tiktok').fallbacks, [], 'TikTok best não pode degradar para best genérico');
 assert.equal(resolveOption('best').fallbacks.includes('best'), false, 'YouTube/Instagram best não pode cair para best progressivo');
 assert.equal(resolveOption('resize-1080'), null, 'opções de recompressão não devem ser aceitas');
-
-// O streaming precisa escolher o teto real: 4K VP9 vem antes de 1080p AVC.
-const streamingInfo = {
-  formats: [
-    { format_id: '137', url: 'https://cdn/1080', vcodec: 'avc1', acodec: 'none', width: 1920, height: 1080, ext: 'mp4' },
-    { format_id: '625', url: 'https://cdn/2160', vcodec: 'vp09', acodec: 'none', width: 3840, height: 2160, ext: 'mp4' },
-    { format_id: '140', url: 'https://cdn/audio', vcodec: 'none', acodec: 'mp4a', ext: 'm4a' }
-  ]
-};
-const bestSource = selectSources(streamingInfo, 'youtube', 'best');
-assert.equal(bestSource.video, 'https://cdn/2160', 'streaming do Melhor qualidade deve usar o 4K real');
-const fastSource = selectSources(streamingInfo, 'youtube', 'fast');
-assert.ok(fastSource.video || fastSource.url, 'Download rápido precisa ter uma fonte');
-assert.equal(selectSources(streamingInfo, 'youtube', 'audio').url, 'https://cdn/audio', 'MP3 deve vir da faixa de áudio');
 
 console.log('\nOK: TikTok tem Full HD, HD comprimido e MP3; YouTube/Instagram têm Melhor qualidade (sem queda), Download rápido, HD 720p, SD 360p e MP3.');

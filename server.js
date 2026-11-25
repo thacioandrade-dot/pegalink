@@ -19,7 +19,7 @@ const {
   releaseDownloadSlot,
   MAX_CONCURRENT_DOWNLOADS
 } = require('./lib/downloader');
-const { createStream, primeInfo } = require('./lib/streamer');
+const { createStream } = require('./lib/streamer');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -198,9 +198,6 @@ app.post('/api/info', rateLimit, async (req, res) => {
   }
 
   const info = await getVideoInfo(url, platform);
-  // Guarda os URLs originais para o download em streaming reaproveitar a busca
-  // que acabou de acontecer, sem precisar consultar o YouTube de novo.
-  primeInfo(url, platform, info);
   const data = summarizeInfo(info, platform);
 
   infoCache.set(key, { at: Date.now(), data });
@@ -213,30 +210,6 @@ app.post('/api/info', rateLimit, async (req, res) => {
   res.set('Cache-Control', 'private, max-age=60');
   res.json(data);
 });
-
-// Resolve quando o primeiro byte do arquivo chega. Se o ffmpeg falhar antes
-// disso, o servidor ainda pode cair para o caminho antigo sem ter enviado
-// nenhum cabeçalho ao navegador.
-function waitForFirstChunk(streamed) {
-  return new Promise((resolve, reject) => {
-    let settled = false;
-    const settle = (callback, value) => {
-      if (settled) return;
-      settled = true;
-      streamed.stdout.removeListener('data', onData);
-      callback(value);
-    };
-    const onData = (chunk) => {
-      streamed.stdout.pause();
-      settle(resolve, chunk);
-    };
-    streamed.stdout.on('data', onData);
-    streamed.done.then(
-      () => settle(reject, new Error('O arquivo terminou antes de começar a ser enviado.')),
-      (error) => settle(reject, error)
-    );
-  });
-}
 
 app.post('/api/download', rateLimit, async (req, res) => {
   const body = req.body || {};
@@ -286,10 +259,10 @@ app.post('/api/download', rateLimit, async (req, res) => {
       streamed = await createStream({
         url,
         platform,
-        optionId: option.id,
+        option,
         signal: controller.signal
       });
-      const firstChunk = await waitForFirstChunk(streamed);
+      const firstChunk = streamed.firstChunk;
 
       if (res.destroyed || res.writableEnded) return;
 
